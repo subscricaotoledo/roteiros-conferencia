@@ -86,7 +86,9 @@ function csvToData(csvText) {
 }
 
 async function loadFromCSV(url) {
-  const response = await fetch(url);
+  const cacheBuster = "_cb=" + Date.now();
+  const separator = url.includes("?") ? "&" : "?";
+  const response = await fetch(url + separator + cacheBuster, { cache: "no-store" });
   if (!response.ok) throw new Error(`Erro ao carregar planilha: ${response.status}`);
   const text = await response.text();
   return csvToData(text);
