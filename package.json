@@ -1,0 +1,26 @@
+{
+  "name": "roteiros-conferencia",
+  "version": "1.0.0",
+  "description": "Plataforma interativa com os roteiros de conferência jurídica — padroniza erros por gravidade e consequência, e gera o texto pronto para a tela de observações do sistema.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx @tailwindcss/cli -i css/input.css -o css/output.css --minify",
+    "dev": "npx @tailwindcss/cli -i css/input.css -o css/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/subscricaotoledo/roteiros-conferencia.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/subscricaotoledo/roteiros-conferencia/issues"
+  },
+  "homepage": "https://github.com/subscricaotoledo/roteiros-conferencia#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
+}
