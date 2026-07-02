@@ -3,6 +3,11 @@ const CSV_URLS = {
   "venda-compra-doacao": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
 };
 
+const VIS_SHORT = {
+  "Deve ser visto pelo conferente em decorrência da consequência": "Visualização obrigatória",
+  "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência": "Sujeito à análise da subscrição"
+};
+
 /* ── Estado global ── */
 let DATA = [];
 let state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
