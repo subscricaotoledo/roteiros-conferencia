@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Roteiro de Conferência — Venda e Compra / Doação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#182234;
+    --ink-soft:#3d4a63;
+    --paper:#EEF0EC;
+    --paper-raised:#FFFFFF;
+    --line:#D7D9D1;
+    --brass:#9C7A34;
+    --brass-soft:#F3EBD8;
+    --leve:#3F7A5C;
+    --leve-soft:#E4EFE8;
+    --moderado:#A9782F;
+    --moderado-soft:#F5EBD8;
+    --grave:#9C3B3B;
+    --grave-soft:#F6E6E4;
+    --shadow: 0 1px 2px rgba(24,34,52,0.06), 0 4px 14px rgba(24,34,52,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:980px;margin:0 auto;padding:0 20px 120px;}
+
+  /* HEADER */
+  header{
+    padding:36px 0 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .eyebrow .seal{
+    width:16px;height:16px;border-radius:50%;
+    border:1.6px solid var(--brass);
+    display:inline-block;position:relative;
+  }
+  .eyebrow .seal::after{
+    content:'';position:absolute;inset:4px;border-radius:50%;background:var(--brass);
+  }
+  h1{
+    font-family:'Lora',serif;
+    font-weight:600;
+    font-size:30px;
+    line-height:1.15;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .subtitle{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+  }
+
+  /* STICKY CONTROLS */
+  .controls{
+    position:sticky;top:0;z-index:30;
+    background:var(--paper);
+    padding:14px 0 12px;
+    border-bottom:1px solid var(--line);
+  }
+  .search-row{display:flex;gap:10px;margin-bottom:10px;}
+  .search-box{
+    flex:1;
+    display:flex;align-items:center;gap:8px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 12px;
+  }
+  .search-box svg{flex-shrink:0;opacity:.55;}
+  .search-box input{
+    border:none;outline:none;background:transparent;
+    font-family:'Inter',sans-serif;font-size:14px;width:100%;color:var(--ink);
+  }
+  .clear-btn{
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink-soft);
+    border-radius:8px;
+    padding:0 14px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .clear-btn:hover{border-color:var(--grave);color:var(--grave);}
+
+  .filter-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .chip{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink-soft);
+    cursor:pointer;
+    display:flex;align-items:center;gap:6px;
+    transition:all .12s ease;
+  }
+  .chip .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .chip[data-active="true"]{color:#fff;border-color:transparent;}
+  .chip[data-g="todos"][data-active="true"]{background:var(--ink);}
+  .chip[data-g="Leve"][data-active="true"]{background:var(--leve);}
+  .chip[data-g="Moderado"][data-active="true"]{background:var(--moderado);}
+  .chip[data-g="Grave"][data-active="true"]{background:var(--grave);}
+  .chip[data-g="Leve"]{color:var(--leve);}
+  .chip[data-g="Moderado"]{color:var(--moderado);}
+  .chip[data-g="Grave"]{color:var(--grave);}
+  .spacer{flex:1;}
+  .toggle-marked{
+    font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;
+    color:var(--ink-soft);cursor:pointer;user-select:none;
+    display:flex;align-items:center;gap:6px;
+    padding:6px 10px;border-radius:999px;border:1px dashed var(--line);
+  }
+  .toggle-marked[data-active="true"]{border-color:var(--brass);color:var(--brass);background:var(--brass-soft);}
+
+  .result-count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;color:var(--ink-soft);
+    margin:10px 2px 0;
+  }
+
+  /* SECTIONS */
+  .section{
+    margin-top:18px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .section-head{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 16px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .section-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--brass);
+    border:1px solid var(--brass);
+    border-radius:5px;
+    padding:2px 6px;
+    flex-shrink:0;
+  }
+  .section-title{
+    font-family:'Lora',serif;
+    font-weight:600;
+    font-size:16px;
+    flex:1;
+    color:var(--ink);
+  }
+  .section-meta{
+    display:flex;gap:6px;align-items:center;flex-shrink:0;
+  }
+  .mini-dot{width:8px;height:8px;border-radius:50%;}
+  .section-count{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);
+    margin-left:4px;
+  }
+  .chevron{
+    width:9px;height:9px;
+    border-right:1.6px solid var(--ink-soft);
+    border-bottom:1.6px solid var(--ink-soft);
+    transform:rotate(45deg);
+    transition:transform .15s ease;
+    margin-left:4px;flex-shrink:0;
+  }
+  .section.open .chevron{transform:rotate(-135deg);}
+  .section-body{display:none;border-top:1px solid var(--line);}
+  .section.open .section-body{display:block;}
+
+  /* ITEMS */
+  .item{
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    gap:12px;
+  }
+  .item:last-child{border-bottom:none;}
+  .item.hidden{display:none;}
+  .item-bar{width:3px;border-radius:2px;flex-shrink:0;}
+  .item-bar.Leve{background:var(--leve);}
+  .item-bar.Moderado{background:var(--moderado);}
+  .item-bar.Grave{background:var(--grave);}
+  .item-main{flex:1;min-width:0;}
+  .item-erro{
+    font-size:14.5px;
+    line-height:1.45;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  .item-nota{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin:-4px 0 8px;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .tag{
+    font-family:'Inter',sans-serif;
+    font-size:11px;font-weight:600;
+    padding:3px 9px;border-radius:5px;
+    white-space:nowrap;
+  }
+  .tag.Leve{background:var(--leve-soft);color:var(--leve);}
+  .tag.Moderado{background:var(--moderado-soft);color:var(--moderado);}
+  .tag.Grave{background:var(--grave-soft);color:var(--grave);}
+  .tag.consequencia{background:#EDEEE9;color:var(--ink-soft);}
+  .tag.vis{
+    background:transparent;border:1px solid var(--line);color:var(--ink-soft);
+    cursor:help;font-weight:500;
+  }
+  .tag.vis.obrig{border-color:var(--grave);color:var(--grave);}
+
+  .mark-btn{
+    flex-shrink:0;
+    align-self:flex-start;
+    font-family:'Inter',sans-serif;
+    font-size:12px;font-weight:600;
+    padding:7px 12px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink-soft);
+    cursor:pointer;
+    white-space:nowrap;
+    display:flex;align-items:center;gap:6px;
+  }
+  .mark-btn[data-marked="true"]{
+    background:var(--ink);border-color:var(--ink);color:#fff;
+  }
+  .mark-btn .badge-count{
+    background:var(--brass);color:#fff;
+    border-radius:999px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    padding:1px 6px;
+  }
+
+  /* OCCURRENCES */
+  .occurrences{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+  .detail-panel{
+    padding:10px 12px;
+    background:var(--brass-soft);
+    border:1px solid #E4D6AE;
+    border-radius:8px;
+  }
+  .detail-panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:6px;
+  }
+  .detail-panel-head-left{
+    display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0;
+  }
+  .collapse-chevron{
+    width:7px;height:7px;
+    border-right:1.6px solid #7a5f26;
+    border-bottom:1.6px solid #7a5f26;
+    transform:rotate(45deg);
+    transition:transform .15s ease;
+    flex-shrink:0;
+  }
+  .detail-panel.collapsed .collapse-chevron{transform:rotate(-45deg);}
+  .detail-panel label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#7a5f26;
+    display:block;
+    cursor:pointer;
+  }
+  .occ-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .occ-remove{
+    font-family:'Inter',sans-serif;font-size:11px;font-weight:600;
+    color:var(--grave);background:none;border:none;cursor:pointer;padding:0;
+  }
+  .detail-panel textarea{
+    width:100%;
+    min-height:60px;
+    resize:vertical;
+    border:1px solid #E4D6AE;
+    border-radius:6px;
+    padding:8px 10px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    color:var(--ink);
+    background:#fff;
+    outline:none;
+  }
+  .detail-panel textarea:focus{border-color:var(--brass);}
+  .copy-row{display:flex;justify-content:flex-end;margin-top:8px;}
+  .copy-btn{
+    font-family:'Inter',sans-serif;
+    font-size:12px;font-weight:600;
+    padding:6px 12px;border-radius:6px;
+    border:1px solid var(--brass);
+    background:transparent;color:var(--brass);
+    cursor:pointer;
+  }
+  .copy-btn:hover{background:var(--brass);color:#fff;}
+  .copy-btn.small{padding:4px 9px;font-size:11px;}
+
+  /* collapsed state: compact single row */
+  .detail-panel.collapsed{
+    padding:8px 12px;
+    cursor:pointer;
+  }
+  .detail-panel.collapsed .detail-panel-head{margin-bottom:0;}
+  .collapsed-preview{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    flex:1;
+    min-width:0;
+  }
+  .collapsed-preview.empty{font-style:italic;opacity:.7;}
+
+  .empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  /* FLOATING DRAWER */
+  .drawer-toggle{
+    position:fixed;bottom:22px;right:22px;
+    background:var(--ink);color:#fff;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;
+    padding:13px 20px;border-radius:999px;
+    box-shadow:0 6px 20px rgba(24,34,52,0.28);
+    cursor:pointer;
+    display:flex;align-items:center;gap:8px;
+    z-index:40;
+    border:none;
+  }
+  .drawer-toggle .count{
+    background:var(--brass);
+    color:#fff;
+    border-radius:999px;
+    padding:1px 8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+  }
+  .drawer{
+    position:fixed;bottom:0;right:0;left:0;
+    max-height:78vh;
+    background:var(--paper-raised);
+    border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;
+    box-shadow:0 -8px 30px rgba(24,34,52,0.18);
+    z-index:50;
+    display:none;
+    flex-direction:column;
+  }
+  .drawer.open{display:flex;}
+  .drawer-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--line);
+  }
+  .drawer-head h2{
+    font-family:'Lora',serif;font-size:17px;margin:0;color:var(--ink);
+  }
+  .drawer-close{
+    background:none;border:none;font-size:20px;color:var(--ink-soft);cursor:pointer;line-height:1;
+  }
+  .drawer-body{overflow-y:auto;padding:10px 20px;flex:1;}
+  .drawer-empty{padding:30px 0;text-align:center;color:var(--ink-soft);font-size:13.5px;}
+  .drawer-item{
+    padding:12px 0;border-bottom:1px solid var(--line);
+  }
+  .drawer-item:last-child{border-bottom:none;}
+  .drawer-item-title{font-size:13.5px;color:var(--ink);margin-bottom:4px;font-weight:600;}
+  .drawer-item-detail{font-size:12.5px;color:var(--ink-soft);white-space:pre-wrap;}
+  .drawer-item-remove{
+    font-size:11px;color:var(--grave);background:none;border:none;cursor:pointer;
+    font-family:'Inter',sans-serif;font-weight:600;padding:0;margin-top:6px;
+  }
+  .drawer-footer{
+    padding:14px 20px 18px;border-top:1px solid var(--line);
+    display:flex;gap:10px;
+  }
+  .btn-primary{
+    flex:1;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:13.5px;
+    padding:12px;border-radius:8px;border:none;
+    background:var(--ink);color:#fff;cursor:pointer;
+  }
+  .btn-primary:hover{background:#0f1725;}
+  .btn-secondary{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+    padding:12px 16px;border-radius:8px;border:1px solid var(--line);
+    background:var(--paper-raised);color:var(--ink-soft);cursor:pointer;
+  }
+  .toast{
+    position:fixed;bottom:90px;right:22px;
+    background:var(--ink);color:#fff;
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+    padding:10px 16px;border-radius:8px;
+    z-index:60;opacity:0;pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    transform:translateY(6px);
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @media(max-width:600px){
+    h1{font-size:24px;}
+    .drawer-toggle{right:14px;bottom:14px;padding:11px 16px;font-size:13px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="eyebrow"><span class="seal"></span>Cartório Toledo · Conferência Jurídica</div>
+    <h1>Roteiro de Conferência</h1>
+    <p class="subtitle">Venda e Compra / Doação de Imóveis — gravidade, consequência e apontamento em um só lugar</p>
+  </header>
+
+  <div class="controls">
+    <div class="search-row">
+      <div class="search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Buscar por termo (ex: procuração, ITBI, matrícula...)">
+      </div>
+      <button class="clear-btn" id="resetBtn">Nova conferência</button>
+    </div>
+    <div class="filter-row">
+      <div class="chip" data-g="todos" data-active="true" onclick="setGrav('todos')">Todos</div>
+      <div class="chip" data-g="Leve" onclick="setGrav('Leve')"><span class="dot"></span>Leve</div>
+      <div class="chip" data-g="Moderado" onclick="setGrav('Moderado')"><span class="dot"></span>Moderado</div>
+      <div class="chip" data-g="Grave" onclick="setGrav('Grave')"><span class="dot"></span>Grave</div>
+      <div class="spacer"></div>
+      <div class="toggle-marked" id="onlyMarkedToggle" onclick="toggleOnlyMarked()">Somente apontados</div>
+    </div>
+    <div class="result-count" id="resultCount"></div>
+  </div>
+
+  <div id="sections"></div>
+</div>
+
+<button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer(true)">
+  Apontamentos desta conferência <span class="count" id="drawerCount">0</span>
+</button>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h2>Apontamentos desta conferência</h2>
+    <button class="drawer-close" onclick="toggleDrawer(false)">&times;</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <button class="btn-secondary" onclick="clearAll()">Limpar tudo</button>
+    <button class="btn-primary" onclick="copyAll()">Copiar todos para a tela de observações</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copiado para a área de transferência</div>
+
+<script>
+const DATA = [{"titulo": "QUALIFICAÇÃO - PESSOA FÍSICA", "itens": [{"erro": "Nome do vendedor/comprador incompleto ou divergente do documento apresentado (atentar-se ao nome completo após casamento/divórcio)", "nota": "", "gravidade": "Grave", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de indicação da nacionalidade do vendedor/comprador", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Nacionalidade do vendedor/comprador divergente do documento apresentado", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de indicação da profissão do vendedor/comprador", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de indicação do RG/RNE/RNM (com órgão expedidor) e CPF do vendedor/comprador", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "RG/RNE/RNM (com órgão expedidor) e CPF do vendedor/comprador divergente do documento apresentado", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "RG/RNE/RNM e CPF do vendedor/comprador NÃO arquivado", "nota": "Arquivamento não obrigatório em GED, mas fichas de firmas ou atos eletrônicos", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do estado civil do vendedor/comprador", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Estado civil do vendedor/comprador divergente da certidão de estado civil apresentada", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Certidão de estado civil do vendedor/comprador NÃO arquivada", "nota": "Alinhar entendimento / visão de RI", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência na indicação do regime de bens do vendedor/comprador casado", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Regime de bens do casamento do vendedor/comprador divergente da certidão de estado civil apresentada", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Pacto antenupcial do vendedor/comprador NÃO arquivado (quando aplicável)", "nota": "Alinhar entendimento / visão de RI", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção aos dados do pacto antenupcial do vendedor/comprador", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Registro do pacto antenupcial do vendedor/comprador Livro 3 - Aux. NÃO arquivado (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção aos dados do registro do pacto antenupcial do vendedor/comprador (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Em caso de pacto antenupcial não registrado, NÃO consta expressa menção à necessidade do seu registro antes do relativo à alienação ou à oneração", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Escritura/contrato de união estável do vendedor/comprador NÃO arquivada (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção aos dados da escritura de união estável do vendedor/comprador (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Registro da união estável do vendedor/comprador NÃO arquivado (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção aos dados do registro da união estável do vendedor/comprador (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de qualificação completa do cônjuge do vendedor/comprador", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na indicação do endereço completo com CEP do vendedor/comprador", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "QUALIFICAÇÃO - PARTE MENOR", "itens": [{"erro": "Ausência de menção expressa à idade do vendedor/comprador menor de idade", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do nome completo do(s) representante(s) do vendedor/comprador menor de idade", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação da nacionalidade do(s) representante(s) do vendedor/comprador menor de idade", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação da profissão do(s) representante(s) do vendedor/comprador menor de idade", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do estado civil do(s) representante(s) do vendedor/comprador menor de idade", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do RG/RNE/RNM (com órgão expedidor) e CPF do(s) representante(s) do vendedor/comprador menor de idade", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "RG/RNE/RNM e CPF do(s) representante(s) do vendedor/comprador menor de idade NÃO arquivado", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "QUALIFICAÇÃO - PESSOA JURÍDICA", "itens": [{"erro": "Ausência ou incorreção na denominação da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na indicação do endereço da sede da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na indicação do CNPJ da pessoa jurídica da empresa vendedora/compradora", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na indicação do NIRE da empresa vendedora/compradora na Junta Comercial (se for caso)", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na indicação do número de registro da empresa vendedora/compradora no Registro Civil das Pessoas Jurídicas (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ficha cadastral completa da empresa vendedora/compradora emitida pela Junta Comercial NÃO arquivada ou fora do prazo de validade de 90 dias (quando aplicável)", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Certidão de breve relato da empresa vendedora/compradora emitida pelo Registro Civil das Pessoas Jurídicas NÃO arquivada ou fora do prazo de validade de 1 ano (quando aplicável)", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Último contrato ou estatuto social consolidado da empresa vendedora/compradora NÃO arquivado", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de menção à cláusula do contrato ou estatuto social que rege a representação da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ata de assembleia de eleição da diretoria da empresa vendedora/compradora NÃO arquivada (quando aplicável)", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção à ata de assembleia de eleição da diretoria da empresa vendedora/compradora (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ata de assembleia que autoriza a empresa vendedora/compradora a alienar ou adquirir o imóvel NÃO arquivada (quando aplicável)", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção à ata de assembleia que autoriza a empresa vendedora/compradora a alienar ou adquirir o imóvel (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do nome completo do(s) representante(s) da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação da nacionalidade do(s) representante(s) da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação da profissão do(s) representante(s) da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do estado civil do(s) representante(s) da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de indicação do RG/RNE/RNM (com órgão expedidor) e CPF do(s) representante(s) da empresa vendedora/compradora", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "RG/RNE/RNM e CPF do(s) representante(s) da empresa vendedora/compradora NÃO arquivado", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "REPRESENTAÇÃO POR PROCURAÇÃO", "itens": [{"erro": "Procuração NÃO arquivada ou arquivada fora do prazo de validade de 90 dias", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção à serventia em que foi lavrada a procuração", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção à data em que foi lavrada a procuração", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção ao livro e às folhas em que foi lavrada a procuração", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de reconhecimento de sinal público em procuração lavrada fora do Município de São Paulo (quando aplicável)", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Tradução juramentada de procuração lavrada no exterior NÃO arquivada (quando aplicável)", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Registro da tradução da procuração estrangeira no Registro de Títulos e Documentos NÃO arquivado (quando aplicável)", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção ao registro da procuração no Registro de Títulos e Documentos, quando aplicável", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "REPRESENTAÇÃO POR ALVARÁ, TERMO DE CURATELA E OUTROS", "itens": [{"erro": "Certidão do escrevente atestando a verificação da autenticidade do alvará ou mandado judicial NÃO arquivada.", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Alvará ou mandado judicial NÃO arquivado", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção aos dados do alvará ou mandado judicial que autoriza a alienação ou aquisição do imóvel", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "IDENTIDADE E CAPACIDADE DAS PARTES", "itens": [{"erro": "Ausência ou incorreção na redação padrão de identificação e capacidade das partes", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "IMÓVEL RURAL", "itens": [{"erro": "Certidão de matrícula do imóvel NÃO arquivada ou arquivada fora do prazo de validade 30 dias", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Descrição de imóvel rural georreferenciado incompleta, com ausência de dados obrigatórios (matrícula no Registro de Imóveis, localização, denominação, área total, número de cadastro no INCRA ou NIRF).", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Descrição de imóvel rural não georreferenciado ou objeto de transcrição incompleta, sem indicação pormenorizada das características e confrontações", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Descrição do imóvel em desconformidade com averbações de alteração de logradouro ou lançamento constantes da matrícula", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Vendedor não identificado como proprietário tabular do imóvel na matrícula", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incompletude de referência ao título de aquisição do alienante (instrumento, natureza do negócio, matrícula e Registro de Imóveis)", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na referência completa ao ônus averbado na matrícula (quando aplicável)", "nota": "", "gravidade": "Moderado", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Termo de quitação ou liberação de ônus averbado na matrícula NÃO arquivado (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de menção ao condicionamento do registro do título ao cancelamento de ônus averbado na matrícula (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certificado de Cadastro de Imóvel Rural (CCIR), emitido pelo Incra, NÃO arquivado", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção aos dados do Certificado de Cadastro de Imóvel Rural (CCIR)", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Declaração do Imposto sobre a Propriedade Territorial Rural (DITR) e comprovante de quitação do ITR NÃO arquivados", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção ao número do imóvel rural junto à Receita Federal (NIRF).", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção ao valor do imóvel declarado para fins de ITR", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de verificação do atendimento aos requisitos da Lei nº 5.709/1971 para aquisição de imóvel rural por estrangeiro (quando aplicável)", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "IMÓVEL URBANO", "itens": [{"erro": "Certidão de matrícula do imóvel NÃO arquivada ou arquivada fora do prazo de validade 30 dias", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Descrição de imóvel objeto de matrícula incompleta, com ausência de dados obrigatórios (logradouro, número, bairro, cidade, estado, área total ou número da matrícula no Registro de Imóveis)", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Descrição de imóvel objeto de transcrição incompleta, sem indicação pormenorizada das características e confrontações", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Descrição do imóvel em desconformidade com averbações de alteração de logradouro ou lançamento constantes da matrícula", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Certidão de dados cadastrais do imóvel NÃO arquivada.", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Vendedor não identificado como proprietário tabular do imóvel na matrícula/transcrição", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção de referência ao título de aquisição do alienante (instrumento, natureza do negócio, matrícula e Registro de Imóveis)", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na referência completa ao ônus averbado na matrícula (quando aplicável)", "nota": "", "gravidade": "Moderado", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Termo de quitação ou liberação de ônus averbado na matrícula NÃO arquivado (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de menção ao condicionamento do registro do título ao cancelamento de ônus averbado na matrícula (quando aplicável)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção ao número de contribuinte do imóvel junto à Prefeitura Municipal", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Cálculo incorreto dos valores proporcionais em caso de contribuinte em área maior", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção na menção ao valor venal do imóvel para fins de IPTU, quando aplicável", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certidão de valor venal do imóvel NÃO arquivada", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção ao valor venal de referência do imóvel", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Imóvel enquadrado como HIS ou HMP sem menção, ciência ou declarações obrigatórias no ato", "nota": "", "gravidade": "Grave", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "SPU/TRANSFERÊNCIA DE DOMÍNIO ÚTIL", "itens": [{"erro": "Ausência ou incorreção na menção à apresentação da certidão da Secretaria de Patrimônio da União (SPU)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certidão da Secretaria de Patrimônio da União (SPU) NÃO arquivada", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção ao recolhimento do laudêmio", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Comprovante de recolhimento do laudêmio NÃO arquivado", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção na menção à apresentação da Certidão de Autorização de Transferência (CAT)", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certidão de Autorização de Transferência (CAT) NÃO arquivada", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de ciência do adquirente quanto à obrigação de requerer à SPU a transferência cadastral no prazo legal.", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "COMPRA E VENDA", "itens": [{"erro": "Preço do negócio NÃO indicado em algarismos e por extenso", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Forma de pagamento NÃO declarada ou declarada de forma incompleta, em desacordo com o Provimento 161/2024", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de declaração de quitação da quantia recebida, quando aplicável", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de menção à responsabilidade do vendedor pela evicção de direito, na forma da lei", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "DOAÇÃO/DOAÇÃO DE NUMERÁRIO", "itens": [{"erro": "Valor atribuído ao negócio NÃO indicado em algarismo e por extenso", "nota": "", "gravidade": "Grave", "consequencia": "Rerratificação e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de menção ao grau de parentesco entre doador e donatário", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausente declaração do doador de que o imóvel integra a parte disponível, dispensando a colação, ou de que se trata de adiantamento da legítima, devendo ser levado à colação (arts. 2.002 a 2.012 do Código Civil)", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de declaração de que o doador possui bens suficientes para sua subsistência e de que a doação é realizada sem coação", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declaração das partes de que se trata da primeira doação entre elas no corrente exercício, se invocada isenção de ITCMD", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de manifestação de aceitação da doação pelo donatário ou de ressalva quanto à aceitação futura.", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "DECLARAÇÕES DAS PARTES", "itens": [{"erro": "Ausência de declarações do vendedor como: a) que o imóvel se encontra livre e desembaraçado de quaisquer ônus reais, judiciais ou extrajudiciais; b) inexistem outras ações reais e pessoais reipersecutórias, relativas ao imóvel, e de outros ônus reais incidentes sobre o mesmo; c) não existem débitos condominiais (se for o caso).", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declarações do vendedor como: ausência de declarações como: a) aceita as declarações de inexistência de débitos condominiais e tem ciência do art. 1.345 do Código Civil (se for o caso); b) tem ciência da convenção condominial e se obriga a respeitá-la.", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declaração de que o estado civil das partes corresponde ao informado na qualificação, se for o caso", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declaração de que o ato societário apresentado corresponde à última alteração contratual da pessoa jurídica, se for o caso", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declaração das partes quanto à condição de pessoa exposta politicamente (PEP), atualmente ou nos últimos cinco anos.", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declaração das partes quanto à recusa ou impossibilidade de fornecer os dados completos da forma de pagamento, conforme Provimento 161/2024, caso as partes não forneçam dados suficientes para preenchimento das informações da forma de pagamento", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "CERTIDÕES", "itens": [{"erro": "Ausência ou incorreção na alusão à certidão de matrícula do imóvel", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência ou incorreção da menção ao número, data de emissão e data de validade da Certidão Negativa de Débitos Trabalhistas (CNDT), ou ausência de declaração das partes quanto à possibilidade de sua obtenção, nos termos do art. 642-A da CLT", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certidão Negativa de Débitos Trabalhistas (CNDT) NÃO arquivada ou arquivada fora do seu prazo de validade", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção da menção ao número, data de emissão e data de validade da certidão municipal, ou ausência de declaração de dispensa pelo adquirente com assunção de responsabilidade por eventuais débitos.", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certidão municipal NÃO arquivada ou arquivada fora do seu prazo de validade", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou incorreção da menção ao número, data de emissão e data de validade da Certidão Negativa de Tributos Federais (CNDU), ou ausência de declaração de dispensa aplicável.", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Certidão Negativa de Tributos Federais (CNDU) NÃO arquivada ou arquivada fora do seu prazo de validade", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "EXIGÊNCIAS LEGAIS OU FISCAIS", "itens": [{"erro": "Guia de ITBI/ITCMD NÃO arquivada", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Comprovante de pagamento do ITBI/ITCMD NÃO arquivado", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de menção ao recolhimento do imposto de transmissão (ITBI/ITCMD) no ato.", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Valor do imposto de transmissão (ITBI/ITCMD) mencionado no ato em desacordo com a guia apresentada.", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de menção à imunidade ou isenção do imposto de transmissão, se for o caso", "nota": "", "gravidade": "Moderado", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Declaração de Isenção de ITBI assinada pelo comprador com reconhecimento de firma NÃO arquivada, quando aplicável", "nota": "", "gravidade": "Grave", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Imposto de transmissão (ITBI/ITCMD) não recolhido dentro do prazo legal anterior à lavratura do ato, sem ressalva expressa no instrumento.", "nota": "", "gravidade": "Grave", "consequencia": "Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de menção ao código de consulta (HASH) da Central Nacional de Indisponibilidade de Bens – CNIB.", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Resultado positivo na consulta à CNIB sem menção à ciência das partes no ato.", "nota": "", "gravidade": "Grave", "consequencia": "Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Redação da cláusula de arquivamento fora do padrão atual do Cartório", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Declaração de arquivamento não localizada ou não arquivada no GED, se for o caso", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de menção à emissão da Declaração sobre Operações Imobiliárias – DOI.", "nota": "", "gravidade": "Grave", "consequencia": "Ata retificativa e Devolução RI", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Cobrança de custas ou emolumentos em desacordo com a tabela vigente.", "nota": "", "gravidade": "Grave", "consequencia": "Ato sem efeito", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência ou aplicação incorreta de regra específica de cobrança de custas e emolumentos aplicável ao ato.", "nota": "", "gravidade": "Grave", "consequencia": "Ato sem efeito", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Cota-recibo das custas e emolumentos NÃO arquivado", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Divergência entre o valor das custas e emolumentos indicado no ato e o valor constante no recibo", "nota": "", "gravidade": "Leve", "consequencia": "Sem óbices", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}]}, {"titulo": "ENCERRAMENTO", "itens": [{"erro": "Ausência de referência no ato ao cumprimento das exigências legais e fiscais necessárias à sua lavratura", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Ausência de declaração de que a escritura foi lida na presença das partes e dos demais comparecentes, ou de que todos a leram", "nota": "", "gravidade": "Leve", "consequencia": "Ata retificativa", "visibilidade": "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência"}, {"erro": "Selo digital não gerado ou vinculado corretamente ao ato", "nota": "", "gravidade": "Grave", "consequencia": "Ato sem efeito", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "ASSINATURA", "itens": [{"erro": "Ausência de assinatura de alguma das partes ou comparecentes no ato.", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Assinaturas apostas fora das margens de impressão da folha do livro", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência de cartão de assinatura atualizado das partes (modelo vigente) no acervo do cartório", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}, {"titulo": "ASSINATURA ELETRÔNICA", "itens": [{"erro": "Ausência de verificação ou de atendimento aos requisitos de competência territorial para a prática do ato", "nota": "", "gravidade": "Grave", "consequencia": "Ato sem efeito", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Arquivos obrigatórios do ato eletrônico não localizados na pasta de classificadores eletrônicos, conforme manual do e-Notariado", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência do número da matrícula notarial eletrônica na folha do livro impresso", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Ausência do número da matrícula notarial eletrônica no protocolo do ato", "nota": "", "gravidade": "Leve", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Certificado digital emitido sem observância dos requisitos mínimos previstos no manual do e-Notariado.", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}, {"erro": "Videoconferência realizada sem observância dos requisitos previstos nos arts. 302 a 304 do Provimento nº 149/2023 do CNJ", "nota": "", "gravidade": "Moderado", "consequencia": "Pendência subscrição", "visibilidade": "Deve ser visto pelo conferente em decorrência da consequência"}]}];
+
+const VIS_SHORT = {
+  "Deve ser visto pelo conferente em decorrência da consequência": "Visualização obrigatória",
+  "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência": "Sujeito à análise da subscrição"
+};
+
+let state = { search:"", grav:"todos", onlyMarked:false, openSections:new Set([0]) };
+let marks = {}; // id -> [{detalhe}, {detalhe}, ...]  (uma ou mais ocorrências do mesmo erro)
+let collapsed = new Set(); // chaves "id-oi" dos painéis recolhidos
+
+function itemId(si, ii){ return si+"-"+ii; }
+function hasMark(id){ return marks[id] && marks[id].length > 0; }
+function occCount(id){ return marks[id] ? marks[id].length : 0; }
+function occKey(id, oi){ return id+"::"+oi; }
+
+function matchesFilter(item){
+  if(state.grav!=="todos" && item.gravidade!==state.grav) return false;
+  if(state.search){
+    const q = state.search.toLowerCase();
+    const hay = (item.erro+" "+item.nota+" "+item.consequencia).toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  return true;
+}
+
+function render(){
+  const container = document.getElementById('sections');
+  container.innerHTML = "";
+  let totalVisible = 0;
+
+  DATA.forEach((section, si)=>{
+    const visibleItems = section.itens
+      .map((it, ii)=>({it, ii}))
+      .filter(({it, ii})=> {
+        const id = itemId(si, ii);
+        if(state.onlyMarked && !hasMark(id)) return false;
+        return matchesFilter(it);
+      });
+
+    if(visibleItems.length===0) return;
+    totalVisible += visibleItems.length;
+
+    const counts = {Leve:0, Moderado:0, Grave:0};
+    section.itens.forEach(it=>counts[it.gravidade]++);
+
+    const isOpen = state.openSections.has(si) || state.search || state.onlyMarked;
+
+    const secDiv = document.createElement('div');
+    secDiv.className = 'section' + (isOpen ? ' open' : '');
+
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = `
+      <span class="section-num">${String(si+1).padStart(2,'0')}</span>
+      <span class="section-title">${section.titulo}</span>
+      <span class="section-meta">
+        ${counts.Grave? `<span class="mini-dot" style="background:var(--grave)" title="${counts.Grave} grave(s)"></span>`:''}
+        ${counts.Moderado? `<span class="mini-dot" style="background:var(--moderado)" title="${counts.Moderado} moderado(s)"></span>`:''}
+        ${counts.Leve? `<span class="mini-dot" style="background:var(--leve)" title="${counts.Leve} leve(s)"></span>`:''}
+        <span class="section-count">${visibleItems.length}/${section.itens.length}</span>
+      </span>
+      <span class="chevron"></span>
+    `;
+    head.onclick = ()=>{
+      if(state.openSections.has(si)) state.openSections.delete(si);
+      else state.openSections.add(si);
+      render();
+    };
+
+    const body = document.createElement('div');
+    body.className = 'section-body';
+
+    visibleItems.forEach(({it, ii})=>{
+      const id = itemId(si, ii);
+      const occs = marks[id] || [];
+      const visShort = VIS_SHORT[it.visibilidade] || it.visibilidade;
+      const isObrig = it.visibilidade.startsWith("Deve");
+
+      const panelsHtml = occs.map((occ, oi)=>{
+        const key = occKey(id, oi);
+        const isCollapsed = collapsed.has(key);
+        const labelText = occs.length>1 ? `Ocorrência ${oi+1} de ${occs.length}` : 'Detalhamento do erro';
+
+        if(isCollapsed){
+          const preview = occ.detalhe && occ.detalhe.trim() ? occ.detalhe.trim() : '(sem detalhamento preenchido — clique para editar)';
+          return `
+            <div class="detail-panel collapsed" onclick="toggleCollapse('${id}', ${oi})">
+              <div class="detail-panel-head">
+                <div class="detail-panel-head-left">
+                  <span class="collapse-chevron"></span>
+                  <label>${labelText}</label>
+                  <span class="collapsed-preview ${occ.detalhe && occ.detalhe.trim() ? '' : 'empty'}">${preview}</span>
+                </div>
+                <div class="occ-actions">
+                  <button class="occ-remove" onclick="event.stopPropagation(); removeOccurrence('${id}', ${oi})">Remover</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="detail-panel">
+            <div class="detail-panel-head">
+              <div class="detail-panel-head-left" onclick="toggleCollapse('${id}', ${oi})">
+                <span class="collapse-chevron"></span>
+                <label>${labelText} (para colar na tela de observações)</label>
+              </div>
+              <div class="occ-actions">
+                <button class="occ-remove" onclick="removeOccurrence('${id}', ${oi})">Remover</button>
+              </div>
+            </div>
+            <textarea id="ta-${id}-${oi}" placeholder="Ex.: refere-se ao vendedor João da Silva / refere-se ao comprador...">${occ.detalhe || ''}</textarea>
+            <div class="copy-row">
+              <button class="copy-btn small" onclick="copyOccurrence('${id}', ${oi})">Copiar esta ocorrência</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item';
+      itemDiv.innerHTML = `
+        <div class="item-bar ${it.gravidade}"></div>
+        <div class="item-main">
+          <div class="item-erro">${it.erro}</div>
+          ${it.nota ? `<div class="item-nota">${it.nota}</div>` : ''}
+          <div class="tags">
+            <span class="tag ${it.gravidade}">${it.gravidade}</span>
+            <span class="tag consequencia">${it.consequencia}</span>
+            <span class="tag vis ${isObrig?'obrig':''}" title="${it.visibilidade}">${visShort}</span>
+          </div>
+          ${occs.length ? `<div class="occurrences">${panelsHtml}</div>` : ''}
+        </div>
+        <button class="mark-btn" data-marked="${occs.length>0}" id="btn-${id}" onclick="addOccurrence('${id}', ${si}, ${ii})">
+          ${occs.length ? `+ Ocorrência` : 'Apontar'}
+          ${occs.length ? `<span class="badge-count">×${occs.length}</span>` : ''}
+        </button>
+      `;
+      body.appendChild(itemDiv);
+    });
+
+    secDiv.appendChild(head);
+    secDiv.appendChild(body);
+    container.appendChild(secDiv);
+  });
+
+  document.getElementById('resultCount').textContent =
+    totalVisible + (totalVisible===1 ? " erro encontrado" : " erros encontrados");
+
+  if(totalVisible===0){
+    container.innerHTML = `<div class="empty-state">Nenhum erro encontrado com os filtros atuais.</div>`;
+  }
+
+  // reattach textarea listeners for each occurrence (save as user types)
+  Object.keys(marks).forEach(id=>{
+    marks[id].forEach((occ, oi)=>{
+      const ta = document.getElementById(`ta-${id}-${oi}`);
+      if(ta){
+        ta.addEventListener('input', ()=>{
+          occ.detalhe = ta.value;
+          updateDrawerCount();
+        });
+      }
+    });
+  });
+
+  updateDrawerCount();
+}
+
+function setGrav(g){
+  state.grav = g;
+  document.querySelectorAll('.chip[data-g]').forEach(c=>{
+    c.setAttribute('data-active', c.dataset.g===g ? 'true':'false');
+  });
+  render();
+}
+
+function toggleOnlyMarked(){
+  state.onlyMarked = !state.onlyMarked;
+  document.getElementById('onlyMarkedToggle').setAttribute('data-active', state.onlyMarked);
+  render();
+}
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  state.search = e.target.value.trim();
+  render();
+});
+
+function addOccurrence(id, si, ii){
+  // recolhe todos os painéis já abertos, para manter só o novo em foco
+  Object.keys(marks).forEach(mid=>{
+    marks[mid].forEach((_, oi)=> collapsed.add(occKey(mid, oi)));
+  });
+
+  const it = DATA[si].itens[ii];
+  if(!marks[id]) marks[id] = [];
+  marks[id].push({
+    erro: it.erro,
+    gravidade: it.gravidade,
+    consequencia: it.consequencia,
+    secao: DATA[si].titulo,
+    detalhe: ""
+  });
+  const newIndex = marks[id].length - 1;
+  collapsed.delete(occKey(id, newIndex));
+  render();
+  setTimeout(()=>document.getElementById(`ta-${id}-${newIndex}`)?.focus(), 50);
+}
+
+function toggleCollapse(id, oi){
+  const key = occKey(id, oi);
+  if(collapsed.has(key)) collapsed.delete(key);
+  else collapsed.add(key);
+  render();
+}
+
+function removeOccurrence(id, oi){
+  if(!marks[id]) return;
+  marks[id].splice(oi, 1);
+  if(marks[id].length===0) delete marks[id];
+  // reindexa as chaves de colapso das ocorrências remanescentes
+  const remaining = new Set();
+  collapsed.forEach(key=>{
+    const [kid, koi] = key.split('::');
+    if(kid !== id){ remaining.add(key); return; }
+    const idx = parseInt(koi, 10);
+    if(idx < oi) remaining.add(key);
+    else if(idx > oi) remaining.add(occKey(id, idx-1));
+  });
+  collapsed = remaining;
+  render();
+}
+
+function formatOne(m, occLabel){
+  let s = `[${m.gravidade.toUpperCase()}] ${m.erro}${occLabel ? ' — '+occLabel : ''} (${m.consequencia})`;
+  if(m.detalhe && m.detalhe.trim()) s += `\n> ${m.detalhe.trim()}`;
+  return s;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function copyToClipboard(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast('Copiado para a área de transferência')).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); showToast('Copiado para a área de transferência'); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+function copyOccurrence(id, oi){
+  const occs = marks[id];
+  if(!occs || !occs[oi]) return;
+  const label = occs.length>1 ? `Ocorrência ${oi+1} de ${occs.length}` : null;
+  copyToClipboard(formatOne(occs[oi], label));
+}
+
+function copyAll(){
+  const ids = Object.keys(marks);
+  if(ids.length===0){ showToast('Nenhum apontamento selecionado'); return; }
+  const blocks = [];
+  ids.forEach(id=>{
+    const occs = marks[id];
+    occs.forEach((occ, oi)=>{
+      const label = occs.length>1 ? `Ocorrência ${oi+1} de ${occs.length}` : null;
+      blocks.push(formatOne(occ, label));
+    });
+  });
+  copyToClipboard(blocks.join('\n\n'));
+}
+
+function updateDrawerCount(){
+  const totalOcc = Object.values(marks).reduce((sum, occs)=>sum+occs.length, 0);
+  document.getElementById('drawerCount').textContent = totalOcc;
+  const body = document.getElementById('drawerBody');
+  body.innerHTML = "";
+  if(totalOcc===0){
+    body.innerHTML = `<div class="drawer-empty">Nenhum erro apontado ainda. Use "Apontar" em um item da lista.</div>`;
+    return;
+  }
+  Object.keys(marks).forEach(id=>{
+    const occs = marks[id];
+    occs.forEach((m, oi)=>{
+      const div = document.createElement('div');
+      div.className = 'drawer-item';
+      const label = occs.length>1 ? ` (ocorrência ${oi+1} de ${occs.length})` : '';
+      div.innerHTML = `
+        <div class="drawer-item-title">[${m.gravidade}] ${m.erro}${label}</div>
+        <div class="drawer-item-detail">${m.detalhe && m.detalhe.trim() ? m.detalhe : '(sem detalhamento preenchido)'}</div>
+        <button class="drawer-item-remove" onclick="removeOccurrence('${id}', ${oi})">Remover apontamento</button>
+      `;
+      body.appendChild(div);
+    });
+  });
+}
+
+function toggleDrawer(open){
+  document.getElementById('drawer').classList.toggle('open', open);
+}
+
+function clearAll(){
+  if(Object.keys(marks).length===0) return;
+  if(confirm('Limpar todos os apontamentos desta conferência?')){
+    marks = {};
+    collapsed = new Set();
+    render();
+  }
+}
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(Object.keys(marks).length>0 && !confirm('Iniciar nova conferência? Os apontamentos atuais serão apagados.')) return;
+  marks = {};
+  collapsed = new Set();
+  state = { search:"", grav:"todos", onlyMarked:false, openSections:new Set([0]) };
+  document.getElementById('searchInput').value = "";
+  setGrav('todos');
+  document.getElementById('onlyMarkedToggle').setAttribute('data-active', false);
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
