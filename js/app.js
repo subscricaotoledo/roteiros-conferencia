@@ -4,7 +4,7 @@ const CSV_URLS = {
 };
 
 /* ── Estado global ── */
-let DATA = DATA_VENDA_COMPRA_DOACAO;
+let DATA = [];
 let state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
 let marks = {};
 let collapsed = new Set();
@@ -357,22 +357,13 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   render();
 });
 
-/* Carrega dados da planilha; usa fallback local se falhar */
+/* Carrega dados da planilha */
 (async function init() {
-  // Renderiza imediatamente com dados locais (experiência instantânea)
-  render();
-
-  // Tenta atualizar com dados frescos da planilha
   const csvUrl = CSV_URLS["venda-compra-doacao"];
-  if (csvUrl) {
-    try {
-      const freshData = await loadFromCSV(csvUrl);
-      if (freshData && freshData.length > 0) {
-        DATA = freshData;
-        render();
-      }
-    } catch (e) {
-      console.warn("Falha ao carregar planilha, usando dados locais:", e.message);
-    }
+  try {
+    DATA = await loadFromCSV(csvUrl);
+  } catch (e) {
+    console.error("Falha ao carregar planilha:", e.message);
   }
+  render();
 })();
