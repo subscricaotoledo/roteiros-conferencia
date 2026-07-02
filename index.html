@@ -71,6 +71,83 @@
     margin:0 0 22px;
   }
 
+  /* ROTEIRO SELECTOR */
+  .roteiro-selector{
+    position:relative;
+    display:inline-block;
+    margin-bottom:16px;
+  }
+  .roteiro-selector-btn{
+    display:flex;align-items:center;gap:10px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;font-weight:600;
+    color:var(--ink);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 14px;
+    cursor:pointer;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .roteiro-selector-btn:hover{border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft);}
+  .roteiro-selector-btn .selector-icon{
+    width:18px;height:18px;
+    border-radius:5px;
+    background:var(--brass-soft);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .roteiro-selector-btn .selector-icon svg{width:10px;height:10px;color:var(--brass);}
+  .roteiro-selector-btn .selector-chevron{
+    width:8px;height:8px;
+    border-right:1.6px solid var(--ink-soft);
+    border-bottom:1.6px solid var(--ink-soft);
+    transform:rotate(45deg);
+    transition:transform .15s ease;
+    margin-left:4px;
+  }
+  .roteiro-selector.open .selector-chevron{transform:rotate(-135deg);}
+  .roteiro-dropdown{
+    display:none;
+    position:absolute;
+    top:calc(100% + 6px);
+    left:0;
+    min-width:320px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:0 8px 24px rgba(24,34,52,0.12);
+    z-index:35;
+    overflow:hidden;
+  }
+  .roteiro-selector.open .roteiro-dropdown{display:block;}
+  .roteiro-dropdown-item{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+    cursor:pointer;
+    border-bottom:1px solid var(--line);
+    transition:background .1s ease;
+  }
+  .roteiro-dropdown-item:last-child{border-bottom:none;}
+  .roteiro-dropdown-item:hover{background:var(--brass-soft);}
+  .roteiro-dropdown-item.active{background:var(--brass-soft);font-weight:600;}
+  .roteiro-dropdown-item .check{
+    width:16px;height:16px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    color:var(--brass);
+  }
+  .roteiro-dropdown-item .check svg{display:none;}
+  .roteiro-dropdown-item.active .check svg{display:block;}
+  .roteiro-dropdown-item .roteiro-label{flex:1;min-width:0;}
+  .roteiro-dropdown-item .roteiro-label-name{display:block;font-size:13px;}
+  .roteiro-dropdown-item .roteiro-label-desc{display:block;font-size:11px;color:var(--ink-soft);font-weight:400;margin-top:2px;}
+  .roteiro-dropdown-item.disabled{opacity:.45;cursor:not-allowed;}
+  .roteiro-dropdown-item.disabled:hover{background:transparent;}
+
   /* STICKY CONTROLS */
   .controls{
     position:sticky;top:0;z-index:30;
@@ -442,7 +519,47 @@
   <header>
     <div class="eyebrow"><span class="seal"></span>Cartório Toledo · Conferência Jurídica</div>
     <h1>Roteiro de Conferência</h1>
-    <p class="subtitle">Venda e Compra / Doação de Imóveis — gravidade, consequência e apontamento em um só lugar</p>
+    <p class="subtitle">Gravidade, consequência e apontamento em um só lugar</p>
+
+    <div class="roteiro-selector" id="roteiroSelector">
+      <button class="roteiro-selector-btn" onclick="toggleRoteiroMenu()">
+        <span class="selector-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        </span>
+        <span id="roteiroSelectedLabel">Venda e Compra / Doação de Imóveis</span>
+        <span class="selector-chevron"></span>
+      </button>
+      <div class="roteiro-dropdown">
+        <div class="roteiro-dropdown-item active" data-roteiro="venda-compra-doacao" onclick="selectRoteiro(this)">
+          <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="roteiro-label">
+            <span class="roteiro-label-name">Venda e Compra / Doação de Imóveis</span>
+            <span class="roteiro-label-desc">Escrituras de compra e venda, doação e doação de numerário</span>
+          </span>
+        </div>
+        <div class="roteiro-dropdown-item disabled" data-roteiro="" onclick="return false">
+          <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="roteiro-label">
+            <span class="roteiro-label-name">Inventário e Partilha</span>
+            <span class="roteiro-label-desc">Em breve</span>
+          </span>
+        </div>
+        <div class="roteiro-dropdown-item disabled" data-roteiro="" onclick="return false">
+          <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="roteiro-label">
+            <span class="roteiro-label-name">Divórcio / Dissolução de União Estável</span>
+            <span class="roteiro-label-desc">Em breve</span>
+          </span>
+        </div>
+        <div class="roteiro-dropdown-item disabled" data-roteiro="" onclick="return false">
+          <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span class="roteiro-label">
+            <span class="roteiro-label-name">Procuração</span>
+            <span class="roteiro-label-desc">Em breve</span>
+          </span>
+        </div>
+      </div>
+    </div>
   </header>
 
   <div class="controls">
@@ -819,6 +936,25 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 });
 
 render();
+
+function toggleRoteiroMenu(){
+  document.getElementById('roteiroSelector').classList.toggle('open');
+}
+
+function selectRoteiro(el){
+  if(el.classList.contains('disabled')) return;
+  document.querySelectorAll('.roteiro-dropdown-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('roteiroSelectedLabel').textContent =
+    el.querySelector('.roteiro-label-name').textContent;
+  document.getElementById('roteiroSelector').classList.remove('open');
+}
+
+// fechar dropdown ao clicar fora
+document.addEventListener('click', (e)=>{
+  const sel = document.getElementById('roteiroSelector');
+  if(!sel.contains(e.target)) sel.classList.remove('open');
+});
 </script>
 </body>
 </html>
