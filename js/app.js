@@ -3,11 +3,6 @@ const CSV_URLS = {
   "venda-compra-doacao": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
 };
 
-const VIS_SHORT = {
-  "Deve ser visto pelo conferente em decorrência da consequência": "Visualização obrigatória",
-  "Pode ser visto pelo conferente, mas a subscrição irá analisar a necessidade da consequência": "Sujeito à análise da subscrição"
-};
-
 /* ── Estado global ── */
 let DATA = [];
 let state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
@@ -80,7 +75,6 @@ function render() {
     visibleItems.forEach(({ it, ii }) => {
       const id = itemId(si, ii);
       const occs = marks[id] || [];
-      const visShort = VIS_SHORT[it.visibilidade] || it.visibilidade;
       const isObrig = it.visibilidade.startsWith("Deve");
 
       const panelsHtml = occs
@@ -137,7 +131,7 @@ function render() {
           <div class="tags">
             <span class="tag ${it.gravidade}">${it.gravidade}</span>
             <span class="tag consequencia">${it.consequencia}</span>
-            <span class="tag vis ${isObrig ? "obrig" : ""}" title="${it.visibilidade}">${visShort}</span>
+            <span class="tag vis ${isObrig ? "obrig" : ""}" title="${it.visibilidade}">${it.visibilidade}</span>
           </div>
           ${occs.length ? `<div class="occurrences">${panelsHtml}</div>` : ""}
         </div>
