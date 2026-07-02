@@ -1,3 +1,8 @@
+/* ── URLs das planilhas (Google Sheets publicadas como CSV) ── */
+const CSV_URLS = {
+  "venda-compra-doacao": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
+};
+
 /* ── Estado global ── */
 let DATA = DATA_VENDA_COMPRA_DOACAO;
 let state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
@@ -352,4 +357,22 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   render();
 });
 
-render();
+/* Carrega dados da planilha; usa fallback local se falhar */
+(async function init() {
+  // Renderiza imediatamente com dados locais (experiência instantânea)
+  render();
+
+  // Tenta atualizar com dados frescos da planilha
+  const csvUrl = CSV_URLS["venda-compra-doacao"];
+  if (csvUrl) {
+    try {
+      const freshData = await loadFromCSV(csvUrl);
+      if (freshData && freshData.length > 0) {
+        DATA = freshData;
+        render();
+      }
+    } catch (e) {
+      console.warn("Falha ao carregar planilha, usando dados locais:", e.message);
+    }
+  }
+})();
