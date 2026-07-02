@@ -100,14 +100,14 @@ body {
 }
 
 /* Chips de filtro */
+.chip[data-g="Leve"] { @apply text-leve; }
+.chip[data-g="Moderado"] { @apply text-moderado; }
+.chip[data-g="Grave"] { @apply text-grave; }
 .chip[data-active="true"] { @apply text-white border-transparent; }
 .chip[data-g="todos"][data-active="true"] { @apply bg-ink; }
 .chip[data-g="Leve"][data-active="true"] { @apply bg-leve; }
 .chip[data-g="Moderado"][data-active="true"] { @apply bg-moderado; }
 .chip[data-g="Grave"][data-active="true"] { @apply bg-grave; }
-.chip[data-g="Leve"] { @apply text-leve; }
-.chip[data-g="Moderado"] { @apply text-moderado; }
-.chip[data-g="Grave"] { @apply text-grave; }
 
 /* Toggle "somente apontados" */
 .toggle-marked[data-active="true"] {
