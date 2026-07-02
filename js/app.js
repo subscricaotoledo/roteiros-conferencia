@@ -231,7 +231,7 @@ function removeOccurrence(id, oi) {
 
 /* ── Clipboard ── */
 function formatOne(m, occLabel) {
-  let s = `[${m.gravidade.toUpperCase()}] (${m.consequencia})${occLabel ? " — " + occLabel : ""}`;
+  let s = `[${m.gravidade.toUpperCase()}] [${m.consequencia}]${occLabel ? " — " + occLabel : ""}`;
   s += `\n> ${(m.detalhe || "").trim()}`;
   return s;
 }
