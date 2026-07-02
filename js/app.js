@@ -106,7 +106,7 @@ function render() {
               <div class="detail-panel-head">
                 <div class="detail-panel-head-left" onclick="toggleCollapse('${id}', ${oi})">
                   <span class="collapse-chevron"></span>
-                  <label>${labelText} (para colar na tela de observações)</label>
+                  <label>${labelText} <span class="text-grave">*</span> (obrigatório, para colar na tela de observações)</label>
                 </div>
                 <div class="occ-actions">
                   <button class="occ-remove" onclick="removeOccurrence('${id}', ${oi})">Remover</button>
@@ -231,8 +231,8 @@ function removeOccurrence(id, oi) {
 
 /* ── Clipboard ── */
 function formatOne(m, occLabel) {
-  let s = `[${m.gravidade.toUpperCase()}] ${m.erro}${occLabel ? " — " + occLabel : ""} (${m.consequencia})`;
-  if (m.detalhe && m.detalhe.trim()) s += `\n> ${m.detalhe.trim()}`;
+  let s = `[${m.gravidade.toUpperCase()}] (${m.consequencia})${occLabel ? " — " + occLabel : ""}`;
+  s += `\n> ${(m.detalhe || "").trim()}`;
   return s;
 }
 
@@ -260,16 +260,45 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
+function isDetalheFilled(occ) {
+  return !!(occ.detalhe && occ.detalhe.trim());
+}
+
 function copyOccurrence(id, oi) {
   const occs = marks[id];
   if (!occs || !occs[oi]) return;
+  const occ = occs[oi];
+  if (!isDetalheFilled(occ)) {
+    collapsed.delete(occKey(id, oi));
+    render();
+    showToast("Preencha o detalhamento antes de copiar");
+    document.getElementById(`ta-${id}-${oi}`)?.focus();
+    return;
+  }
   const label = occs.length > 1 ? `Ocorrência ${oi + 1} de ${occs.length}` : null;
-  copyToClipboard(formatOne(occs[oi], label));
+  copyToClipboard(formatOne(occ, label));
 }
 
 function copyAll() {
   const ids = Object.keys(marks);
   if (ids.length === 0) { showToast("Nenhum apontamento selecionado"); return; }
+
+  const pending = [];
+  ids.forEach((id) => {
+    marks[id].forEach((occ, oi) => {
+      if (!isDetalheFilled(occ)) pending.push({ id, oi });
+    });
+  });
+  if (pending.length > 0) {
+    pending.forEach(({ id, oi }) => collapsed.delete(occKey(id, oi)));
+    render();
+    showToast(pending.length === 1
+      ? "Preencha o detalhamento pendente antes de copiar"
+      : `Preencha os ${pending.length} detalhamentos pendentes antes de copiar`);
+    document.getElementById(`ta-${pending[0].id}-${pending[0].oi}`)?.focus();
+    return;
+  }
+
   const blocks = [];
   ids.forEach((id) => {
     const occs = marks[id];
