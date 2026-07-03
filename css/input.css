@@ -4,9 +4,9 @@
 @theme {
   --color-ink: #16283d;
   --color-ink-soft: #3d4a63;
-  --color-paper: #EEF0EC;
+  --color-paper: #EEF1F4;
   --color-paper-raised: #FFFFFF;
-  --color-line: #D7D9D1;
+  --color-line: #D9DEE3;
   --color-azul: #2563A6;
   --color-azul-soft: #DDEAF6;
   --color-leve: #3F7A5C;
@@ -16,9 +16,9 @@
   --color-grave: #9C3B3B;
   --color-grave-soft: #F6E6E4;
 
-  --font-serif: 'Cambria', 'Gelasio', 'Georgia', serif;
-  --font-sans: 'Cambria', 'Gelasio', 'Georgia', serif;
-  --font-mono: 'Cambria', 'Gelasio', 'Georgia', serif;
+  --font-serif: 'Open Sans', sans-serif;
+  --font-sans: 'Open Sans', sans-serif;
+  --font-mono: 'Open Sans', sans-serif;
 }
 
 /* ── Base ── */
