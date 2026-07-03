@@ -4,6 +4,7 @@ const CSV_URLS = {
   "adjudicacao-compulsoria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIrcR2pD1Kz_Sr21-9uutjgQvXtSsCqmlgs8D8mIDBj_pN46OrtCqnoGCNlfY3-FO_vJLbkC0whDR/pub?output=csv",
   "alienacao-fiduciaria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH5I2eLMQM73gZ2xbvXp2xjxvXn1QqVOAQuuIwKa18o7kXSAEEMO1_zhdYY6fek9KnLzEZNht3en7N/pub?output=csv",
   "cessao-precatorio": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTunm02rN2xrJAZAVBdci184nVoGsJ5dIxUC2Vp0tWNW5UP8P-BJbsw32nCHB6d08xGXkaZvgummCCO/pub?output=csv",
+  "dacao-pagamento": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQU3QQxWGhho93L_yoXAyJ68UiV9gzPgdIExyyIBQLSqtLl9TEu8JCGUCldd5bP6A0AslqtJJlNQJsG/pub?output=csv",
 };
 
 /* ── Estado global ── */
