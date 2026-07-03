@@ -75,7 +75,6 @@ function render() {
     visibleItems.forEach(({ it, ii }) => {
       const id = itemId(si, ii);
       const occs = marks[id] || [];
-      const isObrig = it.visibilidade.startsWith("Deve");
 
       const panelsHtml = occs
         .map((occ, oi) => {
@@ -130,8 +129,8 @@ function render() {
           ${it.nota ? `<div class="item-nota">${it.nota}</div>` : ""}
           <div class="tags">
             <span class="tag ${it.gravidade}">${it.gravidade}</span>
-            <span class="tag consequencia">${it.consequencia}</span>
-            <span class="tag vis ${isObrig ? "obrig" : ""}" title="${it.visibilidade}">${it.visibilidade}</span>
+            <span class="tag consequencia ${it.gravidade}">${it.consequencia}</span>
+            <span class="tag vis" title="${it.visibilidade}">${it.visibilidade}</span>
           </div>
           ${occs.length ? `<div class="occurrences">${panelsHtml}</div>` : ""}
         </div>
@@ -151,6 +150,8 @@ function render() {
   document.getElementById("resultCount").textContent =
     totalVisible + (totalVisible === 1 ? " erro encontrado" : " erros encontrados");
 
+  updateChipCounts();
+
   if (totalVisible === 0) {
     container.innerHTML = `<div class="empty-state">Nenhum erro encontrado com os filtros atuais.</div>`;
   }
@@ -168,6 +169,15 @@ function render() {
   });
 
   updateDrawerCount();
+}
+
+function updateChipCounts() {
+  const counts = { Leve: 0, Moderado: 0, Grave: 0 };
+  DATA.forEach((section) => section.itens.forEach((it) => counts[it.gravidade]++));
+  Object.keys(counts).forEach((g) => {
+    const el = document.getElementById(`count-${g}`);
+    if (el) el.textContent = counts[g];
+  });
 }
 
 /* ── Filtros ── */
