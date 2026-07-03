@@ -242,3 +242,21 @@ body {
 
 /* Empty state */
 .empty-state { @apply text-center py-[60px] px-5 text-ink-soft text-sm; }
+
+/* Loading state */
+.loading-state {
+  @apply flex flex-col items-center justify-center gap-3 py-[70px] px-5 text-ink-soft text-sm;
+  animation: fade-in .2s ease;
+}
+.spinner {
+  @apply w-6 h-6 rounded-full border-[3px] border-line inline-block;
+  border-top-color: var(--color-azul);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

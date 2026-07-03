@@ -9,7 +9,8 @@ let DATA = [];
 let state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
 let marks = {};
 let collapsed = new Set();
-let currentRoteiro = "venda-compra-doacao";
+let currentRoteiro = null;
+let isLoadingRoteiro = false;
 
 /* ── Helpers ── */
 function itemId(si, ii) { return si + "-" + ii; }
@@ -30,6 +31,15 @@ function matchesFilter(item) {
 function render() {
   const container = document.getElementById("sections");
   container.innerHTML = "";
+
+  if (!currentRoteiro) {
+    document.getElementById("resultCount").textContent = "";
+    container.innerHTML = `<div class="empty-state">Selecione um roteiro de conferência no menu acima para começar.</div>`;
+    updateChipCounts();
+    updateDrawerCount();
+    return;
+  }
+
   let totalVisible = 0;
 
   DATA.forEach((section, si) => {
@@ -367,7 +377,7 @@ function toggleRoteiroMenu() {
 }
 
 function selectRoteiro(el) {
-  if (el.classList.contains("disabled")) return;
+  if (el.classList.contains("disabled") || isLoadingRoteiro) return;
   document.getElementById("roteiroSelector").classList.remove("open");
 
   const roteiroKey = el.dataset.roteiro;
@@ -383,7 +393,18 @@ function selectRoteiro(el) {
   loadRoteiro(roteiroKey);
 }
 
+function renderLoading() {
+  document.getElementById("resultCount").textContent = "";
+  document.getElementById("sections").innerHTML = `
+    <div class="loading-state">
+      <span class="spinner"></span>
+      Carregando roteiro...
+    </div>
+  `;
+}
+
 async function loadRoteiro(key) {
+  isLoadingRoteiro = true;
   currentRoteiro = key;
   marks = {};
   collapsed = new Set();
@@ -391,12 +412,14 @@ async function loadRoteiro(key) {
   document.getElementById("searchInput").value = "";
   setGrav("todos");
   document.getElementById("onlyMarkedToggle").setAttribute("data-active", false);
+  renderLoading();
   try {
     DATA = await loadFromCSV(CSV_URLS[key]);
   } catch (e) {
     console.error("Falha ao carregar planilha:", e.message);
     DATA = [];
   }
+  isLoadingRoteiro = false;
   render();
 }
 
@@ -422,12 +445,5 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   render();
 });
 
-/* Carrega dados da planilha */
-(async function init() {
-  try {
-    DATA = await loadFromCSV(CSV_URLS[currentRoteiro]);
-  } catch (e) {
-    console.error("Falha ao carregar planilha:", e.message);
-  }
-  render();
-})();
+/* Nenhum roteiro é carregado por padrão — o conferente escolhe no menu */
+render();
