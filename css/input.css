@@ -64,7 +64,7 @@ body {
 
 /* Barra lateral colorida dos itens */
 .item-bar {
-  @apply w-[3px] rounded-sm shrink-0;
+  @apply w-[3px] rounded-sm shrink-0 bg-line;
 }
 .item-bar.Leve { @apply bg-leve; }
 .item-bar.Moderado { @apply bg-moderado; }
@@ -79,6 +79,9 @@ body {
 .tag.Grave { @apply bg-grave-soft text-grave; }
 .tag.vis {
   @apply bg-transparent border border-line text-ink-soft cursor-help font-medium;
+}
+.tag.classificador {
+  @apply bg-azul-soft text-azul;
 }
 
 /* Toast */

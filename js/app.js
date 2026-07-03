@@ -1,13 +1,73 @@
-/* ── URLs das planilhas (Google Sheets publicadas como CSV) ── */
-const CSV_URLS = {
-  "venda-compra-doacao": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
-  "adjudicacao-compulsoria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIrcR2pD1Kz_Sr21-9uutjgQvXtSsCqmlgs8D8mIDBj_pN46OrtCqnoGCNlfY3-FO_vJLbkC0whDR/pub?output=csv",
-  "alienacao-fiduciaria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH5I2eLMQM73gZ2xbvXp2xjxvXn1QqVOAQuuIwKa18o7kXSAEEMO1_zhdYY6fek9KnLzEZNht3en7N/pub?output=csv",
-  "cessao-precatorio": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTunm02rN2xrJAZAVBdci184nVoGsJ5dIxUC2Vp0tWNW5UP8P-BJbsw32nCHB6d08xGXkaZvgummCCO/pub?output=csv",
-  "dacao-pagamento": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQU3QQxWGhho93L_yoXAyJ68UiV9gzPgdIExyyIBQLSqtLl9TEu8JCGUCldd5bP6A0AslqtJJlNQJsG/pub?output=csv",
-  "divorcio": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTt1WsS5jjP3mnlRwY8cxhJYmrCXnh6NgoJrz6noiRYSad7Nxmb6dvgUJvJWa0uAGo-AsPbNMpXWdrF/pub?output=csv",
-  "inventario-partilha": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSI-2alJlY18u2xWASuOhJwBaRTUMdbSx8FP4d54IU-Ykor49B8zyfcyQBVaRigzN8s9YsYhAWinx6a/pub?output=csv",
-};
+/* ── Roteiros disponíveis ──
+ * Cada roteiro carrega uma planilha (Google Sheets publicada como CSV) e
+ * declara qual "structure" de colunas ela usa (ver CSV_STRUCTURES em
+ * csv-loader.js). Roteiros sem url ficam desabilitados no menu ("Em breve").
+ */
+const ROTEIROS = [
+  {
+    key: "venda-compra-doacao",
+    label: "Venda e Compra / Doação de Imóveis",
+    desc: "Escrituras de compra e venda, doação e doação de numerário",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "adjudicacao-compulsoria",
+    label: "Adjudicação Compulsória",
+    desc: "Ações de adjudicação compulsória de imóveis",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIrcR2pD1Kz_Sr21-9uutjgQvXtSsCqmlgs8D8mIDBj_pN46OrtCqnoGCNlfY3-FO_vJLbkC0whDR/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "alienacao-fiduciaria",
+    label: "Alienação Fiduciária",
+    desc: "Escrituras de alienação fiduciária de imóveis",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH5I2eLMQM73gZ2xbvXp2xjxvXn1QqVOAQuuIwKa18o7kXSAEEMO1_zhdYY6fek9KnLzEZNht3en7N/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "cessao-precatorio",
+    label: "Cessão de Precatório",
+    desc: "Escrituras de cessão de crédito de precatório",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTunm02rN2xrJAZAVBdci184nVoGsJ5dIxUC2Vp0tWNW5UP8P-BJbsw32nCHB6d08xGXkaZvgummCCO/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "dacao-pagamento",
+    label: "Dação em Pagamento",
+    desc: "Escrituras de dação em pagamento de imóveis",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQU3QQxWGhho93L_yoXAyJ68UiV9gzPgdIExyyIBQLSqtLl9TEu8JCGUCldd5bP6A0AslqtJJlNQJsG/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "divorcio",
+    label: "Divórcio",
+    desc: "Escrituras de divórcio consensual",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTt1WsS5jjP3mnlRwY8cxhJYmrCXnh6NgoJrz6noiRYSad7Nxmb6dvgUJvJWa0uAGo-AsPbNMpXWdrF/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "inventario-partilha",
+    label: "Inventário e Partilha",
+    desc: "Escrituras de inventário e partilha de bens",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSI-2alJlY18u2xWASuOhJwBaRTUMdbSx8FP4d54IU-Ykor49B8zyfcyQBVaRigzN8s9YsYhAWinx6a/pub?output=csv",
+    structure: "padrao",
+  },
+  {
+    key: "arquivamento-inventario-partilha",
+    label: "Arquivamento — Inventário e Partilha",
+    desc: "Documentos a arquivar no ato de inventário e partilha",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_ugMYmcVilC9TlLaKb4ThpltHRpc6_8LAYVVJtLL9yUkRoNI5GJiSjNgKcnTtIbL-IW0splPewVow/pub?output=csv",
+    structure: "arquivamento",
+  },
+  {
+    key: "procuracao",
+    label: "Procuração",
+    desc: "Em breve",
+    url: null,
+    structure: "padrao",
+  },
+];
 
 /* ── Estado global ── */
 let DATA = [];
@@ -145,9 +205,10 @@ function render() {
           <div class="item-erro">${it.erro}</div>
           ${it.nota ? `<div class="item-nota">${it.nota}</div>` : ""}
           <div class="tags">
-            <span class="tag ${it.gravidade}">${it.gravidade}</span>
-            <span class="tag consequencia ${it.gravidade}">${it.consequencia}</span>
-            <span class="tag vis" title="${it.visibilidade}">${it.visibilidade}</span>
+            ${it.classificador ? `<span class="tag classificador" title="Classificador de arquivamento">${it.classificador}</span>` : ""}
+            ${it.gravidade ? `<span class="tag ${it.gravidade}">${it.gravidade}</span>` : ""}
+            ${it.consequencia ? `<span class="tag consequencia ${it.gravidade}">${it.consequencia}</span>` : ""}
+            ${it.visibilidade ? `<span class="tag vis" title="${it.visibilidade}">${it.visibilidade}</span>` : ""}
           </div>
           ${occs.length ? `<div class="occurrences">${panelsHtml}</div>` : ""}
         </div>
@@ -258,9 +319,12 @@ function removeOccurrence(id, oi) {
 
 /* ── Clipboard ── */
 function formatOne(m, occLabel) {
-  let s = `[${m.gravidade.toUpperCase()}] [${m.consequencia}]${occLabel ? " — " + occLabel : ""}`;
-  s += `\n> ${(m.detalhe || "").trim()}`;
-  return s;
+  const tags = [
+    m.gravidade ? `[${m.gravidade.toUpperCase()}]` : null,
+    m.consequencia ? `[${m.consequencia}]` : null,
+  ].filter(Boolean).join(" ");
+  const header = [tags, occLabel].filter(Boolean).join(" — ");
+  return [header, `> ${(m.detalhe || "").trim()}`].filter(Boolean).join("\n");
 }
 
 function showToast(msg) {
@@ -354,7 +418,7 @@ function updateDrawerCount() {
       div.className = "drawer-item";
       const label = occs.length > 1 ? ` (ocorrência ${oi + 1} de ${occs.length})` : "";
       div.innerHTML = `
-        <div class="drawer-item-title">[${m.gravidade}] ${m.erro}${label}</div>
+        <div class="drawer-item-title">${m.gravidade ? `[${m.gravidade}] ` : ""}${m.erro}${label}</div>
         <div class="drawer-item-detail">${m.detalhe && m.detalhe.trim() ? m.detalhe : "(sem detalhamento preenchido)"}</div>
         <button class="drawer-item-remove" onclick="removeOccurrence('${id}', ${oi})">Remover apontamento</button>
       `;
@@ -377,6 +441,23 @@ function clearAll() {
 }
 
 /* ── Menu de seleção de roteiro ── */
+function renderRoteiroDropdown() {
+  const container = document.getElementById("roteiroDropdown");
+  container.innerHTML = ROTEIROS.map((r, i) => {
+    const disabled = !r.url;
+    const border = i < ROTEIROS.length - 1 ? "border-b border-line" : "";
+    return `
+      <div class="roteiro-dropdown-item ${disabled ? "disabled" : ""} flex items-center gap-2.5 py-3 px-3.5 font-sans text-[13px] text-ink cursor-pointer ${border} transition-colors ${disabled ? "" : "hover:bg-azul-soft"}" data-roteiro="${r.key}" onclick="${disabled ? "return false" : "selectRoteiro(this)"}">
+        <span class="check w-4 h-4 flex items-center justify-center shrink-0 text-azul"><svg class="hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="roteiro-label flex-1 min-w-0">
+          <span class="roteiro-label-name block text-[13px]">${r.label}</span>
+          <span class="roteiro-label-desc block text-[11px] text-ink-soft font-normal mt-0.5">${disabled ? "Em breve" : r.desc}</span>
+        </span>
+      </div>
+    `;
+  }).join("");
+}
+
 function toggleRoteiroMenu() {
   document.getElementById("roteiroSelector").classList.toggle("open");
 }
@@ -386,16 +467,16 @@ function selectRoteiro(el) {
   document.getElementById("roteiroSelector").classList.remove("open");
 
   const roteiroKey = el.dataset.roteiro;
-  if (!roteiroKey || roteiroKey === currentRoteiro) return;
+  const roteiro = ROTEIROS.find((r) => r.key === roteiroKey);
+  if (!roteiro || !roteiro.url || roteiroKey === currentRoteiro) return;
 
   if (Object.keys(marks).length > 0 && !confirm("Trocar de roteiro? Os apontamentos desta conferência serão apagados.")) return;
 
   document.querySelectorAll(".roteiro-dropdown-item").forEach((i) => i.classList.remove("active"));
   el.classList.add("active");
-  document.getElementById("roteiroSelectedLabel").textContent =
-    el.querySelector(".roteiro-label-name").textContent;
+  document.getElementById("roteiroSelectedLabel").textContent = roteiro.label;
 
-  loadRoteiro(roteiroKey);
+  loadRoteiro(roteiro);
 }
 
 function renderLoading() {
@@ -408,9 +489,9 @@ function renderLoading() {
   `;
 }
 
-async function loadRoteiro(key) {
+async function loadRoteiro(roteiro) {
   isLoadingRoteiro = true;
-  currentRoteiro = key;
+  currentRoteiro = roteiro.key;
   marks = {};
   collapsed = new Set();
   state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
@@ -419,7 +500,7 @@ async function loadRoteiro(key) {
   document.getElementById("onlyMarkedToggle").setAttribute("data-active", false);
   renderLoading();
   try {
-    DATA = await loadFromCSV(CSV_URLS[key]);
+    DATA = await loadFromCSV(roteiro.url, roteiro.structure);
   } catch (e) {
     console.error("Falha ao carregar planilha:", e.message);
     DATA = [];
@@ -451,4 +532,5 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 });
 
 /* Nenhum roteiro é carregado por padrão — o conferente escolhe no menu */
+renderRoteiroDropdown();
 render();
