@@ -6,6 +6,7 @@ const CSV_URLS = {
   "cessao-precatorio": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTunm02rN2xrJAZAVBdci184nVoGsJ5dIxUC2Vp0tWNW5UP8P-BJbsw32nCHB6d08xGXkaZvgummCCO/pub?output=csv",
   "dacao-pagamento": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQU3QQxWGhho93L_yoXAyJ68UiV9gzPgdIExyyIBQLSqtLl9TEu8JCGUCldd5bP6A0AslqtJJlNQJsG/pub?output=csv",
   "divorcio": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTt1WsS5jjP3mnlRwY8cxhJYmrCXnh6NgoJrz6noiRYSad7Nxmb6dvgUJvJWa0uAGo-AsPbNMpXWdrF/pub?output=csv",
+  "inventario-partilha": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSI-2alJlY18u2xWASuOhJwBaRTUMdbSx8FP4d54IU-Ykor49B8zyfcyQBVaRigzN8s9YsYhAWinx6a/pub?output=csv",
 };
 
 /* ── Estado global ── */
