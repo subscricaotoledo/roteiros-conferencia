@@ -2,6 +2,7 @@
 const CSV_URLS = {
   "venda-compra-doacao": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
   "adjudicacao-compulsoria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIrcR2pD1Kz_Sr21-9uutjgQvXtSsCqmlgs8D8mIDBj_pN46OrtCqnoGCNlfY3-FO_vJLbkC0whDR/pub?output=csv",
+  "alienacao-fiduciaria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH5I2eLMQM73gZ2xbvXp2xjxvXn1QqVOAQuuIwKa18o7kXSAEEMO1_zhdYY6fek9KnLzEZNht3en7N/pub?output=csv",
 };
 
 /* ── Estado global ── */
