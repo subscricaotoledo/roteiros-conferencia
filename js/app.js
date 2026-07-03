@@ -1,6 +1,7 @@
 /* ── URLs das planilhas (Google Sheets publicadas como CSV) ── */
 const CSV_URLS = {
   "venda-compra-doacao": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
+  "adjudicacao-compulsoria": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIrcR2pD1Kz_Sr21-9uutjgQvXtSsCqmlgs8D8mIDBj_pN46OrtCqnoGCNlfY3-FO_vJLbkC0whDR/pub?output=csv",
 };
 
 /* ── Estado global ── */
@@ -8,6 +9,7 @@ let DATA = [];
 let state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
 let marks = {};
 let collapsed = new Set();
+let currentRoteiro = "venda-compra-doacao";
 
 /* ── Helpers ── */
 function itemId(si, ii) { return si + "-" + ii; }
@@ -366,11 +368,36 @@ function toggleRoteiroMenu() {
 
 function selectRoteiro(el) {
   if (el.classList.contains("disabled")) return;
+  document.getElementById("roteiroSelector").classList.remove("open");
+
+  const roteiroKey = el.dataset.roteiro;
+  if (!roteiroKey || roteiroKey === currentRoteiro) return;
+
+  if (Object.keys(marks).length > 0 && !confirm("Trocar de roteiro? Os apontamentos desta conferência serão apagados.")) return;
+
   document.querySelectorAll(".roteiro-dropdown-item").forEach((i) => i.classList.remove("active"));
   el.classList.add("active");
   document.getElementById("roteiroSelectedLabel").textContent =
     el.querySelector(".roteiro-label-name").textContent;
-  document.getElementById("roteiroSelector").classList.remove("open");
+
+  loadRoteiro(roteiroKey);
+}
+
+async function loadRoteiro(key) {
+  currentRoteiro = key;
+  marks = {};
+  collapsed = new Set();
+  state = { search: "", grav: "todos", onlyMarked: false, openSections: new Set([0]) };
+  document.getElementById("searchInput").value = "";
+  setGrav("todos");
+  document.getElementById("onlyMarkedToggle").setAttribute("data-active", false);
+  try {
+    DATA = await loadFromCSV(CSV_URLS[key]);
+  } catch (e) {
+    console.error("Falha ao carregar planilha:", e.message);
+    DATA = [];
+  }
+  render();
 }
 
 document.addEventListener("click", (e) => {
@@ -397,9 +424,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 
 /* Carrega dados da planilha */
 (async function init() {
-  const csvUrl = CSV_URLS["venda-compra-doacao"];
   try {
-    DATA = await loadFromCSV(csvUrl);
+    DATA = await loadFromCSV(CSV_URLS[currentRoteiro]);
   } catch (e) {
     console.error("Falha ao carregar planilha:", e.message);
   }
