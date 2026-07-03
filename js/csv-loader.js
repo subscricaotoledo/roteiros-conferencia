@@ -16,13 +16,13 @@ const CSV_STRUCTURES = {
     consequencia: "CONSEQUÊNCIA",
     visibilidade: "PODE/DEVE SER VISTO PELO CONFERENTE",
   },
+  // Roteiro de arquivamento: só documento e classificador — sem gravidade,
+  // consequência ou visibilidade (não fazem sentido para esse roteiro,
+  // mesmo que a planilha ainda tenha essas colunas preenchidas).
   arquivamento: {
     erro: "ERRO",
     nota: "DETALHAMENTO DO ERRO",
     classificador: "CLASSIFICADOR DE ARQUIVAMENTO",
-    gravidade: "GRAVIDADE",
-    consequencia: "CONSEQUÊNCIA",
-    visibilidade: "PODE/DEVE SER VISTO PELO CONFERENTE",
   },
 };
 
