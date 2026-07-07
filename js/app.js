@@ -81,13 +81,6 @@ const ROTEIROS = [
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_0tfAOGFA4QesIpF0tAvDpd0sztz2JO-IzWlVC99VmrUZP9V-3z-ZWnd9ZZusGi9VXpfBn5Rn4vRN/pub?output=csv",
     structure: "padrao",
   },
-  {
-    key: "procuracao",
-    label: "Procuração",
-    desc: "Em breve",
-    url: null,
-    structure: "padrao",
-  },
 ];
 
 /* ── Estado global ── */
