@@ -61,6 +61,13 @@ const ROTEIROS = [
     structure: "arquivamento",
   },
   {
+    key: "permuta",
+    label: "Permuta",
+    desc: "Escrituras de permuta de imóveis",
+    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgXXGkr4QiazYd2YGII6N_l5ZWKdo4SI5TKqSveU2bQpicSwHcXRJkBViIohoizHk025Sq2zyhyefH/pub?output=csv",
+    structure: "padrao",
+  },
+  {
     key: "procuracao",
     label: "Procuração",
     desc: "Em breve",
