@@ -83,6 +83,9 @@ body {
 .tag.classificador {
   @apply bg-azul-soft text-azul;
 }
+.tag.tipo {
+  @apply bg-paper text-ink-soft;
+}
 
 /* Toast */
 .toast {

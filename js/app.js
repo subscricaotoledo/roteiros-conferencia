@@ -221,6 +221,7 @@ function render() {
           <div class="tags">
             ${it.classificador ? `<span class="tag classificador" title="Classificador de arquivamento">${it.classificador}</span>` : ""}
             ${it.gravidade ? `<span class="tag ${it.gravidade}">${it.gravidade}</span>` : ""}
+            ${it.tipo ? `<span class="tag tipo">${it.tipo}</span>` : ""}
             ${it.consequencia ? `<span class="tag consequencia ${it.gravidade}">${it.consequencia}</span>` : ""}
             ${it.visibilidade ? `<span class="tag vis" title="${it.visibilidade}">${it.visibilidade}</span>` : ""}
           </div>

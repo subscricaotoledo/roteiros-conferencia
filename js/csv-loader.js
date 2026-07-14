@@ -1,7 +1,7 @@
 /**
  * Carrega dados de roteiro a partir de um CSV publicado do Google Sheets.
  * Converte automaticamente para o formato esperado pelo app:
- * [{ titulo, itens: [{ erro, nota, classificador, gravidade, consequencia, visibilidade }] }]
+ * [{ titulo, itens: [{ erro, nota, tipo, classificador, gravidade, consequencia, visibilidade }] }]
  *
  * Cada roteiro (ver ROTEIROS em app.js) declara uma "structure", que diz
  * qual conjunto de colunas essa planilha usa — evita depender de posição
@@ -12,6 +12,7 @@ const CSV_STRUCTURES = {
   padrao: {
     erro: "ERRO",
     nota: "DETALHAMENTO DO ERRO",
+    tipo: "TIPO DE ERRO",
     gravidade: "GRAVIDADE",
     consequencia: "CONSEQUÊNCIA",
     visibilidade: "PODE/DEVE SER VISTO PELO CONFERENTE",
@@ -111,6 +112,7 @@ function csvToData(csvText, structureKey) {
       currentSection.itens.push({
         erro: col(cols, "erro"),
         nota: col(cols, "nota"),
+        tipo: col(cols, "tipo"),
         classificador: col(cols, "classificador"),
         gravidade: col(cols, "gravidade"),
         consequencia: col(cols, "consequencia"),
