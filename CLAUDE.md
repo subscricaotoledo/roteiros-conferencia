@@ -20,7 +20,9 @@ npm run dev       # o mesmo, em modo watch
 
 ## Fluxo de git
 
-Trabalhe em uma branch de feature, não direto na `main`. Quando a tarefa estiver pronta: dê push na branch e abra um PR com `gh pr create`. **Não** faça o merge do PR — o usuário revisa e mergeia no GitHub.
+Branch não é o padrão para toda tarefa — só crie uma quando o usuário disser explicitamente que está começando uma "feature", e só finalize/mergeie quando ele avisar que terminou. Para o resto (ajustes pontuais, correções de uma linha, scripts, docs) trabalhe direto na `main`, como antes.
+
+Quando uma feature for aberta em branch: ao terminar, dê push e abra um PR (`gh pr create` — instale/autentique o `gh` se necessário, ou passe o link de criação de PR que o `git push` imprime). **Não** faça o merge do PR — o usuário revisa e mergeia no GitHub.
 
 ## Arquitetura
 
