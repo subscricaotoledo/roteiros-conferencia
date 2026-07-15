@@ -3,6 +3,10 @@ import { ROTEIROS } from "../data/roteiros";
 import { useAppStore } from "../stores/useAppStore";
 import { useConfirm } from "./ConfirmModal";
 
+const SORTED_ROTEIROS = [...ROTEIROS].sort((a, b) =>
+  a.label.localeCompare(b.label, "pt-BR")
+);
+
 export function RoteiroSelector() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -59,7 +63,7 @@ export function RoteiroSelector() {
         <span className="selector-chevron" />
       </button>
       <div className="roteiro-dropdown">
-        {ROTEIROS.map((r, i) => {
+        {SORTED_ROTEIROS.map((r, i) => {
           const disabled = !r.url;
           const active = r.key === currentRoteiro;
           return (
@@ -75,7 +79,7 @@ export function RoteiroSelector() {
                 color: "#2b3543",
                 cursor: disabled ? "not-allowed" : "pointer",
                 borderBottom:
-                  i < ROTEIROS.length - 1 ? "1px solid #eef1f5" : "none",
+                  i < SORTED_ROTEIROS.length - 1 ? "1px solid #eef1f5" : "none",
                 fontFamily: "var(--font-sans)",
               }}
               onClick={() => handleSelect(r)}
