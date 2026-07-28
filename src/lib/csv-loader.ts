@@ -111,11 +111,11 @@ function csvToData(csvText: string, structureKey: string): Section[] {
   return sections;
 }
 
-function csvToPartes(csvText: string): string[] {
+function csvToSingleColumn(csvText: string, expectedHeader: string): string[] {
   const lines = parseCSV(csvText);
   if (lines.length === 0) return [];
   const header = (lines[0]?.[0] || "").trim().toUpperCase();
-  if (header !== "PARTES") return [];
+  if (header !== expectedHeader) return [];
   return lines.slice(1).map((row) => (row[0] || "").trim()).filter(Boolean);
 }
 
@@ -147,11 +147,17 @@ async function fetchSheetGids(pubUrl: string): Promise<string[]> {
   }
 }
 
-async function fetchPartes(pubUrl: string): Promise<string[]> {
+interface ExtraTabs {
+  partes: string[];
+  tiposErro: string[];
+}
+
+async function fetchExtraTabs(pubUrl: string): Promise<ExtraTabs> {
   const gids = await fetchSheetGids(pubUrl);
-  // Skip gid=0 (main sheet), try all others
   const otherGids = gids.filter((g) => g !== "0");
-  for (const gid of otherGids) {
+  const result: ExtraTabs = { partes: [], tiposErro: [] };
+
+  const fetches = otherGids.map(async (gid) => {
     try {
       const separator = pubUrl.includes("?") ? "&" : "?";
       const url = pubUrl + separator + "gid=" + gid + "&_cb=" + Date.now();
@@ -159,13 +165,27 @@ async function fetchPartes(pubUrl: string): Promise<string[]> {
         responseType: "text",
         timeout: 8000,
       });
-      const partes = csvToPartes(csv);
-      if (partes.length > 0) return partes;
+      return csv;
     } catch {
-      // skip this gid
+      return null;
     }
+  });
+
+  const csvTexts = await Promise.all(fetches);
+  for (const csv of csvTexts) {
+    if (!csv) continue;
+    if (result.partes.length === 0) {
+      const partes = csvToSingleColumn(csv, "PARTES");
+      if (partes.length > 0) result.partes = partes;
+    }
+    if (result.tiposErro.length === 0) {
+      const tipos = csvToSingleColumn(csv, "TIPO DE ERRO");
+      if (tipos.length > 0) result.tiposErro = tipos;
+    }
+    if (result.partes.length > 0 && result.tiposErro.length > 0) break;
   }
-  return [];
+
+  return result;
 }
 
 export async function loadFromCSV(
@@ -174,13 +194,13 @@ export async function loadFromCSV(
 ): Promise<LoadResult> {
   const cacheBuster = "_cb=" + Date.now();
   const separator = url.includes("?") ? "&" : "?";
-  const [mainResp, partes] = await Promise.all([
+  const [mainResp, extras] = await Promise.all([
     axios.get<string>(url + separator + cacheBuster, {
       responseType: "text",
       headers: { "Cache-Control": "no-cache" },
     }),
-    fetchPartes(url),
+    fetchExtraTabs(url),
   ]);
   const sections = csvToData(mainResp.data, structureKey);
-  return { sections, partes };
+  return { sections, partes: extras.partes, tiposErro: extras.tiposErro };
 }

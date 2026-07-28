@@ -25,6 +25,7 @@ export interface Section {
 export interface LoadResult {
   sections: Section[];
   partes: string[];
+  tiposErro: string[];
 }
 
 export interface Occurrence {
@@ -34,4 +35,5 @@ export interface Occurrence {
   secao: string;
   detalhe: string;
   parte: string;
+  tipoErro: string;
 }

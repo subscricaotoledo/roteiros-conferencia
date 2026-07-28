@@ -5,8 +5,9 @@ export function formatApontamento(item: Item, occ: Occurrence): string {
   const prefix = gravidade ? `[${gravidade}] ` : "";
   const parte = occ.parte ? ` (${occ.parte})` : "";
   const consequencia = item.consequencia ? ` [${item.consequencia}]` : "";
+  const tipoErro = occ.tipoErro ? ` {${occ.tipoErro}}` : "";
   const detalhe = (occ.detalhe ?? "").trim() || "…";
-  return `${prefix}${item.erro}${parte}${consequencia} — ${detalhe}`;
+  return `${prefix}${item.erro}${parte}${consequencia}${tipoErro} — ${detalhe}`;
 }
 
 export function buildFullText(

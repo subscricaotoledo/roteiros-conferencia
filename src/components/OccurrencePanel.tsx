@@ -25,9 +25,11 @@ export function OccurrencePanel({
     marks,
     collapsed,
     partes,
+    tiposErro,
     toggleCollapse,
     updateDetalhe,
     updateParte,
+    updateTipoErro,
     removeOccurrence,
   } = useAppStore();
   const showToast = useToast();
@@ -131,6 +133,21 @@ export function OccurrencePanel({
               onClick={() => updateParte(id, oi, occ.parte === p ? "" : p)}
             >
               {p}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {tiposErro.length > 0 && (
+        <div className="tipo-erro-chips">
+          <span className="tipo-erro-label">Tipo de erro:</span>
+          {tiposErro.map((t) => (
+            <button
+              key={t}
+              className={`tipo-erro-chip ${occ.tipoErro === t ? "active" : ""}`}
+              onClick={() => updateTipoErro(id, oi, occ.tipoErro === t ? "" : t)}
+            >
+              {t}
             </button>
           ))}
         </div>

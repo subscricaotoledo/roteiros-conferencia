@@ -623,6 +623,45 @@ body {
 .party-chip.active:hover {
   background: #0f1725;
 }
+
+/* Chips "Tipo de erro" — tom azulado para diferenciar das partes */
+.tipo-erro-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 9px;
+}
+.tipo-erro-label {
+  font-size: 11px;
+  color: var(--color-azul);
+  margin-right: 2px;
+  font-weight: 600;
+}
+.tipo-erro-chip {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--color-azul-border);
+  background: var(--color-azul-soft);
+  color: var(--color-azul);
+  font-family: var(--font-sans);
+  transition: all 0.1s;
+}
+.tipo-erro-chip:hover {
+  border-color: var(--color-azul);
+  background: #dce8f7;
+}
+.tipo-erro-chip.active {
+  border-color: var(--color-azul);
+  background: var(--color-azul);
+  color: #fff;
+}
+.tipo-erro-chip.active:hover {
+  background: #24507f;
+}
 .detail-panel textarea {
   width: 100%;
   min-height: 62px;

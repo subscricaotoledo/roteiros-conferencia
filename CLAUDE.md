@@ -45,7 +45,7 @@ src/
   types.ts                 # Tipos compartilhados (Item, Section, Occurrence, Roteiro, LoadResult)
   data/roteiros.ts         # Array ROTEIROS com key, label, desc, url, structure
   lib/
-    csv-loader.ts          # Fetch + parse de CSV, discovery de aba "Partes" via pubhtml
+    csv-loader.ts          # Fetch + parse de CSV, discovery de abas "Partes" e "Tipo_Erro" via pubhtml
     format.ts              # formatApontamento() e buildFullText() — regra de negócio do texto
     clipboard.ts           # copyToClipboard helper
   stores/
@@ -56,7 +56,7 @@ src/
     RoteiroSelector.tsx     # Dropdown de seleção de roteiro
     SectionList.tsx         # Lista de seções com acordeão (uma seção aberta por vez)
     SectionItem.tsx         # Card de item individual com tags e botão apontar
-    OccurrencePanel.tsx     # Panel de detalhe de cada ocorrência (parte, textarea, preview)
+    OccurrencePanel.tsx     # Panel de detalhe de cada ocorrência (parte, tipo de erro, textarea, preview)
     ApontamentosPanel.tsx   # Coluna direita — lista de apontamentos + texto final editável
     Drawer.tsx              # Bottom sheet mobile (mesma funcionalidade do ApontamentosPanel)
     ConfirmModal.tsx        # Modal de confirmação (useConfirm hook, Promise-based)
@@ -69,7 +69,9 @@ src/
 
 O checklist de cada roteiro vive em uma planilha Google Sheets, publicada via *Arquivo → Compartilhar → Publicar na web* como CSV. O `csv-loader.ts` busca e faz o parse do CSV no navegador, sob demanda, sempre que um roteiro é selecionado.
 
-Planilhas com a aba "Partes" são detectadas automaticamente: o loader busca o `/pubhtml` da planilha para descobrir os GIDs das abas, depois tenta cada aba não-principal como CSV até encontrar uma com header "PARTES". A coluna "MOSTRAR PARTES?" na aba principal controla se os chips de parte aparecem para cada item.
+Planilhas com abas extras são detectadas automaticamente: o loader busca o `/pubhtml` da planilha para descobrir os GIDs das abas, depois baixa cada aba não-principal como CSV em paralelo e identifica pelo header:
+- **"PARTES"** → lista de partes (Vendedor, Comprador, etc.). A coluna "MOSTRAR PARTES?" na aba principal controla se os chips aparecem para cada item.
+- **"TIPO DE ERRO"** → lista de tipos de erro (Ausência de informação, Incorreção, etc.). Exibido como chips selecionáveis em toda ocorrência.
 
 ### Adicionar um novo roteiro
 

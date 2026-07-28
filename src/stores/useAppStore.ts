@@ -43,6 +43,7 @@ interface UndoSnapshot {
 interface AppState {
   data: Section[];
   partes: string[];
+  tiposErro: string[];
   currentRoteiro: string | null;
   isLoading: boolean;
   search: string;
@@ -67,6 +68,7 @@ interface AppState {
   toggleCollapse: (id: string, oi: number) => void;
   updateDetalhe: (id: string, oi: number, detalhe: string) => void;
   updateParte: (id: string, oi: number, parte: string) => void;
+  updateTipoErro: (id: string, oi: number, tipoErro: string) => void;
   clearAll: () => void;
   resetConferencia: () => void;
   restoreUndo: () => void;
@@ -77,6 +79,7 @@ export const useAppStore = create<AppState>()(
   subscribeWithSelector((set) => ({
     data: [],
     partes: [],
+    tiposErro: [],
     currentRoteiro: null,
     isLoading: false,
     search: "",
@@ -105,10 +108,10 @@ export const useAppStore = create<AppState>()(
       });
       try {
         const result = await loadFromCSV(roteiro.url!, roteiro.structure);
-        set({ data: result.sections, partes: result.partes, isLoading: false });
+        set({ data: result.sections, partes: result.partes, tiposErro: result.tiposErro, isLoading: false });
       } catch (e) {
         console.error("Falha ao carregar planilha:", e);
-        set({ data: [], partes: [], isLoading: false });
+        set({ data: [], partes: [], tiposErro: [], isLoading: false });
       }
     },
 
@@ -143,6 +146,7 @@ export const useAppStore = create<AppState>()(
           secao: sectionTitle,
           detalhe: "",
           parte: "",
+          tipoErro: "",
         };
         newCollapsed.delete(`${id}::${existing.length}`);
         return {
@@ -198,6 +202,14 @@ export const useAppStore = create<AppState>()(
         const occs = [...(s.marks[id] ?? [])];
         if (!occs[oi]) return s;
         occs[oi] = { ...occs[oi], parte };
+        return { marks: { ...s.marks, [id]: occs } };
+      }),
+
+    updateTipoErro: (id, oi, tipoErro) =>
+      set((s) => {
+        const occs = [...(s.marks[id] ?? [])];
+        if (!occs[oi]) return s;
+        occs[oi] = { ...occs[oi], tipoErro };
         return { marks: { ...s.marks, [id]: occs } };
       }),
 
