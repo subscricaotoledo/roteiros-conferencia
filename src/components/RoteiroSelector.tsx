@@ -3,9 +3,14 @@ import { ROTEIROS } from "../data/roteiros";
 import { useAppStore } from "../stores/useAppStore";
 import { useConfirm } from "./ConfirmModal";
 
-const SORTED_ROTEIROS = [...ROTEIROS].sort((a, b) =>
-  a.label.localeCompare(b.label, "pt-BR")
-);
+function sortByLabel(roteiros: typeof ROTEIROS) {
+  return [...roteiros].sort((a, b) => a.label.localeCompare(b.label, "pt-BR"));
+}
+
+const GRUPOS: { titulo: string; roteiros: typeof ROTEIROS }[] = [
+  { titulo: "Prontos", roteiros: sortByLabel(ROTEIROS.filter((r) => r.status === "pronto")) },
+  { titulo: "Em produção", roteiros: sortByLabel(ROTEIROS.filter((r) => r.status === "em-producao")) },
+];
 
 export function RoteiroSelector() {
   const [open, setOpen] = useState(false);
@@ -63,70 +68,87 @@ export function RoteiroSelector() {
         <span className="selector-chevron" />
       </button>
       <div className="roteiro-dropdown">
-        {SORTED_ROTEIROS.map((r, i) => {
-          const disabled = !r.url;
-          const active = r.key === currentRoteiro;
-          return (
+        {GRUPOS.filter((g) => g.roteiros.length > 0).map((g) => (
+          <div key={g.titulo}>
             <div
-              key={r.key}
-              className={`roteiro-dropdown-item ${disabled ? "disabled" : ""} ${active ? "active" : ""}`}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "12px 14px",
-                fontSize: "13px",
-                color: "#2b3543",
-                cursor: disabled ? "not-allowed" : "pointer",
-                borderBottom:
-                  i < SORTED_ROTEIROS.length - 1 ? "1px solid #eef1f5" : "none",
+                padding: "10px 14px 6px",
+                fontSize: "11px",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                color: "#8b96a3",
                 fontFamily: "var(--font-sans)",
               }}
-              onClick={() => handleSelect(r)}
             >
-              <span
-                className="check"
-                style={{
-                  width: "16px",
-                  height: "16px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  color: "#2e5f9e",
-                }}
-              >
-                <svg
-                  style={{ display: active ? "block" : "none" }}
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </span>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: "block", fontSize: "13px" }}>
-                  {r.label}
-                </span>
-                <span
-                  style={{
-                    display: "block",
-                    fontSize: "11px",
-                    color: "#8b96a3",
-                    fontWeight: 400,
-                    marginTop: "2px",
-                  }}
-                >
-                  {disabled ? "Em breve" : r.desc}
-                </span>
-              </span>
+              {g.titulo}
             </div>
-          );
-        })}
+            {g.roteiros.map((r, i) => {
+              const disabled = !r.url;
+              const active = r.key === currentRoteiro;
+              return (
+                <div
+                  key={r.key}
+                  className={`roteiro-dropdown-item ${disabled ? "disabled" : ""} ${active ? "active" : ""}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "12px 14px",
+                    fontSize: "13px",
+                    color: "#2b3543",
+                    cursor: disabled ? "not-allowed" : "pointer",
+                    borderBottom:
+                      i < g.roteiros.length - 1 ? "1px solid #eef1f5" : "none",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                  onClick={() => handleSelect(r)}
+                >
+                  <span
+                    className="check"
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      color: "#2e5f9e",
+                    }}
+                  >
+                    <svg
+                      style={{ display: active ? "block" : "none" }}
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ display: "block", fontSize: "13px" }}>
+                      {r.label}
+                    </span>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: "11px",
+                        color: "#8b96a3",
+                        fontWeight: 400,
+                        marginTop: "2px",
+                      }}
+                    >
+                      {disabled ? "Em breve" : r.desc}
+                    </span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );

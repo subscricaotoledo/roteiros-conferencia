@@ -7,6 +7,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de compra e venda, doação e doação de numerário",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSUXmDUQD0WTFgdEDEKqqIkiqhJ-uOFgNMdDlH0wwymeoZOIiaeyV8S8LWfkc7dzojBpZNViuTEFQD8/pub?output=csv",
     structure: "padrao",
+    status: "pronto",
   },
   {
     key: "adjudicacao-compulsoria",
@@ -14,6 +15,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Ações de adjudicação compulsória de imóveis",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSIrcR2pD1Kz_Sr21-9uutjgQvXtSsCqmlgs8D8mIDBj_pN46OrtCqnoGCNlfY3-FO_vJLbkC0whDR/pub?output=csv",
     structure: "padrao",
+    status: "em-producao",
   },
   {
     key: "alienacao-fiduciaria",
@@ -21,6 +23,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de alienação fiduciária de imóveis",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH5I2eLMQM73gZ2xbvXp2xjxvXn1QqVOAQuuIwKa18o7kXSAEEMO1_zhdYY6fek9KnLzEZNht3en7N/pub?output=csv",
     structure: "padrao",
+    status: "em-producao",
   },
   {
     key: "cessao-precatorio",
@@ -28,6 +31,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de cessão de crédito de precatório",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTunm02rN2xrJAZAVBdci184nVoGsJ5dIxUC2Vp0tWNW5UP8P-BJbsw32nCHB6d08xGXkaZvgummCCO/pub?output=csv",
     structure: "padrao",
+    status: "em-producao",
   },
   {
     key: "dacao-pagamento",
@@ -35,6 +39,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de dação em pagamento de imóveis",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQU3QQxWGhho93L_yoXAyJ68UiV9gzPgdIExyyIBQLSqtLl9TEu8JCGUCldd5bP6A0AslqtJJlNQJsG/pub?output=csv",
     structure: "padrao",
+    status: "pronto",
   },
   {
     key: "divorcio",
@@ -42,6 +47,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de divórcio consensual",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTt1WsS5jjP3mnlRwY8cxhJYmrCXnh6NgoJrz6noiRYSad7Nxmb6dvgUJvJWa0uAGo-AsPbNMpXWdrF/pub?output=csv",
     structure: "padrao",
+    status: "em-producao",
   },
   {
     key: "inventario-partilha",
@@ -49,6 +55,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de inventário e partilha de bens",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSI-2alJlY18u2xWASuOhJwBaRTUMdbSx8FP4d54IU-Ykor49B8zyfcyQBVaRigzN8s9YsYhAWinx6a/pub?output=csv",
     structure: "padrao",
+    status: "em-producao",
   },
   {
     key: "arquivamento-inventario-partilha",
@@ -56,6 +63,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Documentos a arquivar no ato de inventário e partilha",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_ugMYmcVilC9TlLaKb4ThpltHRpc6_8LAYVVJtLL9yUkRoNI5GJiSjNgKcnTtIbL-IW0splPewVow/pub?output=csv",
     structure: "arquivamento",
+    status: "em-producao",
   },
   {
     key: "arquivamento-venda-compra-doacao",
@@ -63,6 +71,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Documentos a arquivar no ato de venda e compra / doação",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTo5Vxx9WiKI8P-C6Zxjqq1YBq5dgjTyYTz3IJUs9L0WdeQL6YVjLrAmQRB6QMji0JBP01kqO4RCmc6/pub?output=csv",
     structure: "arquivamento",
+    status: "em-producao",
   },
   {
     key: "permuta",
@@ -70,6 +79,7 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de permuta de imóveis",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgXXGkr4QiazYd2YGII6N_l5ZWKdo4SI5TKqSveU2bQpicSwHcXRJkBViIohoizHk025Sq2zyhyefH/pub?output=csv",
     structure: "padrao",
+    status: "pronto",
   },
   {
     key: "usucapiao",
@@ -77,5 +87,6 @@ export const ROTEIROS: Roteiro[] = [
     desc: "Escrituras de usucapião extrajudicial",
     url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_0tfAOGFA4QesIpF0tAvDpd0sztz2JO-IzWlVC99VmrUZP9V-3z-ZWnd9ZZusGi9VXpfBn5Rn4vRN/pub?output=csv",
     structure: "padrao",
+    status: "em-producao",
   },
 ];

@@ -4,6 +4,7 @@ export interface Roteiro {
   desc?: string;
   url: string | null;
   structure: "padrao" | "arquivamento";
+  status: "pronto" | "em-producao";
 }
 
 export interface Item {
