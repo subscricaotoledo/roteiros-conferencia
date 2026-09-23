@@ -1,20 +1,25 @@
 import axios from "axios";
 import type { Section, LoadResult } from "../types";
 
-const CSV_STRUCTURES: Record<string, Record<string, string>> = {
+const CSV_STRUCTURES: Record<string, Record<string, string[]>> = {
   padrao: {
-    erro: "ERRO",
-    nota: "DETALHAMENTO DO ERRO",
-    tipo: "TIPO DE ERRO",
-    gravidade: "GRAVIDADE",
-    consequencia: "CONSEQUÊNCIA",
-    visibilidade: "PODE/DEVE SER VISTO PELO CONFERENTE",
-    mostrarPartes: "MOSTRAR PARTES?",
+    erro: ["ERRO"],
+    nota: ["NOTA", "DETALHAMENTO DO ERRO"],
+    tipo: ["CLASSE DO ERRO", "TIPO DE ERRO"],
+    gravidade: ["GRAVIDADE"],
+    consequencia: ["CONSEQUÊNCIA"],
+    gravidadeArquivamento: ["GRAVIDADE ARQUIVAMENTO"],
+    consequenciaArquivamento: ["CONSEQUÊNCIA ARQUIVAMENTO"],
+    visibilidade: [
+      "PODE/DEVE SER VISTO PELO CONFERENTE",
+      "DEVE SER VISTO PELO CONFERENTE/SUBSCRITOR",
+    ],
+    mostrarPartes: ["MOSTRAR PARTES?"],
   },
   arquivamento: {
-    erro: "ERRO",
-    nota: "DETALHAMENTO DO ERRO",
-    classificador: "CLASSIFICADOR DE ARQUIVAMENTO",
+    erro: ["ERRO"],
+    nota: ["NOTA", "DETALHAMENTO DO ERRO"],
+    classificador: ["CLASSIFICADOR DE ARQUIVAMENTO"],
   },
 };
 
@@ -78,7 +83,12 @@ function csvToData(csvText: string, structureKey: string): Section[] {
   const header = lines[0]!.map((h) => (h || "").trim().toUpperCase());
   const colIndex: Record<string, number> = {};
   Object.keys(columns).forEach((key) => {
-    colIndex[key] = header.indexOf(columns[key]!);
+    let idx = -1;
+    for (const candidate of columns[key]!) {
+      idx = header.indexOf(candidate);
+      if (idx >= 0) break;
+    }
+    colIndex[key] = idx;
   });
   const col = (cols: string[], key: string): string => {
     const i = colIndex[key];
@@ -102,6 +112,8 @@ function csvToData(csvText: string, structureKey: string): Section[] {
         classificador: col(cols, "classificador"),
         gravidade: col(cols, "gravidade"),
         consequencia: col(cols, "consequencia"),
+        gravidadeArquivamento: col(cols, "gravidadeArquivamento"),
+        consequenciaArquivamento: col(cols, "consequenciaArquivamento"),
         visibilidade: col(cols, "visibilidade"),
         mostrarPartes: mostrarPartesRaw === "SIM",
       });

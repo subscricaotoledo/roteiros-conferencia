@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAppStore } from "../stores/useAppStore";
 import { OccurrencePanel } from "./OccurrencePanel";
 import type { Item } from "../types";
@@ -10,11 +11,28 @@ interface SectionItemProps {
 
 export function SectionItem({ item, id, sectionTitle }: SectionItemProps) {
   const { marks, addOccurrence } = useAppStore();
+  const [escolhendoClasse, setEscolhendoClasse] = useState(false);
   const occs = marks[id] ?? [];
   const isMarked = occs.length > 0;
   const gravClass = item.gravidade
     ? `grav-${item.gravidade.toLowerCase()}`
     : "grav-none";
+  const temDuplaClassificacao = !!(
+    item.gravidadeArquivamento || item.consequenciaArquivamento
+  );
+
+  function handleApontarClick() {
+    if (temDuplaClassificacao) {
+      setEscolhendoClasse(true);
+    } else {
+      addOccurrence(id, item, sectionTitle);
+    }
+  }
+
+  function handleEscolha(usarArquivamento: boolean) {
+    addOccurrence(id, item, sectionTitle, usarArquivamento);
+    setEscolhendoClasse(false);
+  }
 
   return (
     <div className={`item ${gravClass} ${isMarked ? "marked" : ""}`}>
@@ -39,23 +57,41 @@ export function SectionItem({ item, id, sectionTitle }: SectionItemProps) {
             {item.consequencia && (
               <span className="tag consequencia">{item.consequencia}</span>
             )}
-            {item.tipo && <span className="tag tipo">{item.tipo}</span>}
+            {item.tipo && (
+              <span
+                className={`tag tipo${item.tipo.trim().toLowerCase() === "arquivamento" ? " arquivamento" : ""}`}
+              >
+                {item.tipo}
+              </span>
+            )}
+            {temDuplaClassificacao && (
+              <span className="tag dual-arquivamento">+ Arquivamento</span>
+            )}
           </div>
         </div>
         <div style={{ flex: "none" }}>
-          {isMarked ? (
+          {escolhendoClasse ? (
+            <div className="classe-choice">
+              <button className="classe-choice-btn" onClick={() => handleEscolha(false)}>
+                Jurídico/Material
+              </button>
+              <button
+                className="classe-choice-btn arquivamento"
+                onClick={() => handleEscolha(true)}
+              >
+                Arquivamento
+              </button>
+            </div>
+          ) : isMarked ? (
             <button
               className="mark-btn"
               data-marked="true"
-              onClick={() => addOccurrence(id, item, sectionTitle)}
+              onClick={handleApontarClick}
             >
               + Ocorrência
             </button>
           ) : (
-            <button
-              className="mark-btn"
-              onClick={() => addOccurrence(id, item, sectionTitle)}
-            >
+            <button className="mark-btn" onClick={handleApontarClick}>
               Apontar
             </button>
           )}

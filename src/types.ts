@@ -13,6 +13,8 @@ export interface Item {
   classificador: string;
   gravidade: string;
   consequencia: string;
+  gravidadeArquivamento: string;
+  consequenciaArquivamento: string;
   visibilidade: string;
   mostrarPartes: boolean;
 }
@@ -32,6 +34,7 @@ export interface Occurrence {
   erro: string;
   gravidade: string;
   consequencia: string;
+  classificacaoArquivamento: boolean;
   secao: string;
   detalhe: string;
   parte: string;

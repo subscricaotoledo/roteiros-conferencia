@@ -63,6 +63,7 @@ interface AppState {
     id: string,
     item: Section["itens"][number],
     sectionTitle: string,
+    usarArquivamento?: boolean,
   ) => void;
   removeOccurrence: (id: string, oi: number) => void;
   toggleCollapse: (id: string, oi: number) => void;
@@ -127,7 +128,7 @@ export const useAppStore = create<AppState>()(
         return { openSections: new Set([si]) };
       }),
 
-    addOccurrence: (id, item, sectionTitle) =>
+    addOccurrence: (id, item, sectionTitle, usarArquivamento) =>
       set((s) => {
         const newCollapsed = new Set(s.collapsed);
         Object.keys(s.marks).forEach((mid) => {
@@ -139,10 +140,17 @@ export const useAppStore = create<AppState>()(
         existing.forEach((_, oi) => {
           newCollapsed.add(`${id}::${oi}`);
         });
+        const classificacaoArquivamento =
+          usarArquivamento === true && !!item.gravidadeArquivamento;
         const newOcc: Occurrence = {
           erro: item.erro,
-          gravidade: item.gravidade,
-          consequencia: item.consequencia,
+          gravidade: classificacaoArquivamento
+            ? item.gravidadeArquivamento
+            : item.gravidade,
+          consequencia: classificacaoArquivamento
+            ? item.consequenciaArquivamento
+            : item.consequencia,
+          classificacaoArquivamento,
           secao: sectionTitle,
           detalhe: "",
           parte: "",

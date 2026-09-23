@@ -1,10 +1,11 @@
 import type { Item, Occurrence } from "../types";
 
 export function formatApontamento(item: Item, occ: Occurrence): string {
-  const gravidade = item.gravidade || occ.gravidade;
+  const gravidade = occ.gravidade || item.gravidade;
   const prefix = gravidade ? `[${gravidade}] ` : "";
   const parte = occ.parte ? ` (${occ.parte})` : "";
-  const consequencia = item.consequencia ? ` [${item.consequencia}]` : "";
+  const consequenciaValor = occ.consequencia || item.consequencia;
+  const consequencia = consequenciaValor ? ` [${consequenciaValor}]` : "";
   const tipoErro = occ.tipoErro ? ` {${occ.tipoErro}}` : "";
   const detalhe = (occ.detalhe ?? "").trim() || "…";
   return `${prefix}${item.erro}${parte}${consequencia}${tipoErro} — ${detalhe}`;
