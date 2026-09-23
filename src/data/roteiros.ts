@@ -58,22 +58,6 @@ export const ROTEIROS: Roteiro[] = [
     status: "em-producao",
   },
   {
-    key: "arquivamento-inventario-partilha",
-    label: "Arquivamento — Inventário e Partilha",
-    desc: "Documentos a arquivar no ato de inventário e partilha",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_ugMYmcVilC9TlLaKb4ThpltHRpc6_8LAYVVJtLL9yUkRoNI5GJiSjNgKcnTtIbL-IW0splPewVow/pub?output=csv",
-    structure: "arquivamento",
-    status: "em-producao",
-  },
-  {
-    key: "arquivamento-venda-compra-doacao",
-    label: "Arquivamento — Venda e Compra / Doação",
-    desc: "Documentos a arquivar no ato de venda e compra / doação",
-    url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTo5Vxx9WiKI8P-C6Zxjqq1YBq5dgjTyYTz3IJUs9L0WdeQL6YVjLrAmQRB6QMji0JBP01kqO4RCmc6/pub?output=csv",
-    structure: "arquivamento",
-    status: "em-producao",
-  },
-  {
     key: "permuta",
     label: "Permuta",
     desc: "Escrituras de permuta de imóveis",
